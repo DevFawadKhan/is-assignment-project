@@ -209,3 +209,52 @@ body {
   color: var(--accent-primary);
   font-size: 0.9em;
 }
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 1rem;
+    align-items: flex-start; /* Better for scrolling through long forms/lists on mobile */
+  }
+
+  .glass-panel {
+    padding: 1.5rem;
+    border-radius: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .heading-main {
+    font-size: 1.5rem;
+  }
+
+  .heading-sub {
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .metadata-box {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    padding: 0.5rem;
+  }
+
+  .glass-panel {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+
+  .form-input {
+    padding: 0.75rem;
+  }
+
+  .btn-primary {
+    padding: 0.75rem;
+  }
+}
+

@@ -1,0 +1,13 @@
+model EncryptedFile {
+  id           Int      @id @default(autoincrement())
+  filename     String   @unique // Server-side UUID identifier bypassing directory traversal natively
+  originalName String   // The actual file string (e.g. document.pdf) required for authorized downloads
+  mimeType     String   // Defines precisely how the browser expects the downloaded bytes
+  size         Int      // Binary limitation metrics
+  iv           String   // Initialization Vector explicitly symmetric linking securely mapping to the AES block per file correctly
+  createdAt    DateTime @default(now())
+  
+  // Relational context strictly preventing foreign users from decrypting unauthorized records
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

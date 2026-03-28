@@ -11,4 +11,7 @@ model User{
     role Role @default(USER)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    // Bidirectional mapped relational integrity pointing toward authorized AES files inherently tracking ownership natively
+    encryptedFiles EncryptedFile[]
 }
