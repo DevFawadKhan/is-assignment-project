@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import jwt from "jsonwebtoken";
 import fs from "fs/promises";
 import path from "path";
+import { del } from "@vercel/blob";
 import { cookies } from "next/headers";
 
 export async function DELETE(req: Request) {
@@ -44,14 +45,17 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ message: "Forbidden: Not your file" }, { status: 403 });
     }
 
-    // 1. Delete from the filesystem
-    const uploadDir = path.join(process.cwd(), "uploads");
-    const filePath = path.join(uploadDir, fileRecord.filename);
-    
-    try {
-      await fs.unlink(filePath);
-    } catch (e) {
-      console.error("Warning: File not found on disk during deletion", e);
+    // 1. Delete from storage (Cloud or Local)
+    if (fileRecord.filename.startsWith("http")) {
+      await del(fileRecord.filename);
+    } else {
+      const uploadDir = path.join(process.cwd(), "uploads");
+      const filePath = path.join(uploadDir, fileRecord.filename);
+      try {
+        await fs.unlink(filePath);
+      } catch (e) {
+        console.error("Warning: Local file not found during deletion", e);
+      }
     }
 
     // 2. Delete from the database

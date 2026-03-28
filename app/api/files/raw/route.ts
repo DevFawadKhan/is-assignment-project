@@ -38,14 +38,28 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "Access Denied" }, { status: 403 });
     }
 
-    const uploadDir = path.join(process.cwd(), "uploads");
-    const filePath = path.join(uploadDir, fileRecord.filename);
+    let encryptedBuffer: Buffer;
 
-    const encryptedBuffer = await fs.readFile(filePath);
+    if (fileRecord.filename.startsWith("http")) {
+      const response = await fetch(fileRecord.filename, {
+        headers: {
+          Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch from storage");
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      encryptedBuffer = Buffer.from(arrayBuffer);
+    } else {
+      const uploadDir = path.join(process.cwd(), "uploads");
+      const filePath = path.join(uploadDir, fileRecord.filename);
+      encryptedBuffer = await fs.readFile(filePath);
+    }
 
     // We serve this as text/plain so the browser displays the scrambled "garbage" characters 
     // to prove the file is actually encrypted on the disk.
-    return new NextResponse(encryptedBuffer, {
+    return new NextResponse(new Uint8Array(encryptedBuffer), {
       status: 200,
       headers: {
         "Content-Type": "text/plain",

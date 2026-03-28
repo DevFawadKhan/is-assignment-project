@@ -48,11 +48,27 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "Forbidden Access: You do not have encrypted ownership permissions associated properly natively." }, { status: 403 });
     }
 
-    // 4. Bypassing Directory Traversal leveraging explicit exact UUIDs generated cryptographically symmetrically!
-    const uploadDir = path.join(process.cwd(), "uploads");
-    const filePath = path.join(uploadDir, fileRecord.filename);
+    // 4. Retrieve the encrypted payload
+    let encryptedBuffer: Buffer;
 
-    const encryptedBuffer = await fs.readFile(filePath);
+    if (fileRecord.filename.startsWith("http")) {
+      // Fetching from Vercel Blob storage (Private Access requires Token)
+      const response = await fetch(fileRecord.filename, {
+        headers: {
+          Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch encrypted buffer from Vercel Blob.");
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      encryptedBuffer = Buffer.from(arrayBuffer);
+    } else {
+      // Fallback for legacy local files during transition
+      const uploadDir = path.join(process.cwd(), "uploads");
+      const filePath = path.join(uploadDir, fileRecord.filename);
+      encryptedBuffer = await fs.readFile(filePath);
+    }
 
     // 5. Symmetric Mathematical Disassembly mapping precisely generating true payloads natively.
     const decryptedBuffer = decryptBuffer(encryptedBuffer, fileRecord.iv);

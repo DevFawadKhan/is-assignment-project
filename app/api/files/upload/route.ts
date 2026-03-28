@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import jwt from "jsonwebtoken";
+import { put } from "@vercel/blob";
 import { encryptBuffer } from "@/lib/encryption";
-import fs from "fs/promises";
-import path from "path";
 import crypto from "crypto";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
     // 1. Authorize the user
-    // Strictly isolate actions against logged-in payloads utilizing the auth-token cookie natively
     const cookieStore = await cookies();
     const token = cookieStore.get("auth-token")?.value;
 
@@ -41,32 +39,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "File severely exceeds the 5MB upload limit limit." }, { status: 400 });
     }
 
-    // 3. Prevent Directory Traversal Attack Vectors natively
-    // We isolate the disk writes utilizing UUIDs ensuring no rogue '.. / ..' path extensions are allowed computational access.
+    // 3. Prepare Metadata
     const originalName = file.name;
-    const serverFileName = crypto.randomUUID(); 
-    
-    // 4. Crypto Buffer Engineering
     const arrayBuffer = await file.arrayBuffer();
     const rawBuffer = Buffer.from(arrayBuffer);
     
+    // 4. Crypto Buffer Engineering
     // Scramble the buffer mathematically utilizing robust AES-256-GCM architecture securely.
     const { encryptedBuffer, iv } = encryptBuffer(rawBuffer);
 
-    // 5. Protected File System Output
-    const uploadDir = path.join(process.cwd(), "uploads");
-    const filePath = path.join(uploadDir, serverFileName);
-    
-    await fs.writeFile(filePath, encryptedBuffer);
+    // 5. Vercel Blob Storage Persistence
+    // The underlying storage is now 'private', ensuring no direct public access.
+    // The data is already scrambled (AES-256-GCM) for extra structural security.
+    const { url } = await put(`encrypted/${crypto.randomUUID()}.${originalName.split('.').pop() || 'bin'}`, encryptedBuffer, {
+      access: "private",
+      contentType: "application/octet-stream", // Enforcing binary stream handling
+    });
 
     // 6. Prisma Database Integrity Mappings
     const uploadedRecord = await prisma.encryptedFile.create({
       data: {
-        filename: serverFileName,
-        originalName: originalName, // Maintaining authorized record contexts securely
+        filename: url, // Storing the Vercel Blob URL directly
+        originalName: originalName,
         mimeType: file.type,
         size: file.size,
-        iv: iv, // Critical structural key metric mapping exactly symmetric block cipher vectors together
+        iv: iv,
         userId: userId,
       },
     });
