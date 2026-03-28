@@ -18,6 +18,7 @@ export default function HomePage() {
   const [uploading, setUploading] = useState(false);
   const [files, setFiles] = useState<EncryptedFile[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<{ name: string } | null>(null);
   
   // Custom Modal States
   const [deleteModal, setDeleteModal] = useState<{ show: boolean; fileId: number | null }>({
@@ -27,7 +28,20 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchFiles();
+    fetchUser();
   }, []);
+
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("/api/auth/me");
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.user);
+      }
+    } catch (err) {
+      console.error("Failed to fetch user info", err);
+    }
+  };
 
   const fetchFiles = async () => {
     try {
@@ -122,56 +136,46 @@ export default function HomePage() {
   };
 
   return (
-    <div className="app-container" style={{ flexDirection: "column", gap: "2rem", padding: "4rem 2rem" }}>
-      <div className="glass-panel" style={{ maxWidth: "1000px", width: "95%", position: "relative" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: "1rem" }}>
-          <div style={{ flex: "1 1 250px" }}>
-            <h1 className="heading-main" style={{ marginBottom: 0 }}>Secure File Vault</h1>
-            <p className="heading-sub" style={{ margin: 0 }}>
-              You are securely authenticated.
+    <div className="flex flex-col gap-8 min-h-screen items-center py-16 px-8 md:px-12">
+      <div className="glass p-8 md:p-12 rounded-[24px] w-full max-w-[1000px] relative animate-slide-up">
+        <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
+          <div className="flex-1 min-w-[250px]">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-0">Secure File Vault</h1>
+            <p className="text-text-muted text-sm md:text-base font-bold text-white mt-1">
+              {user ? `Welcome, ${user.name}` : "You are securely authenticated."}
             </p>
           </div>
           <button 
             onClick={handleLogout} 
-            className="btn-primary" 
+            className="btn-primary flex items-center justify-center bg-error hover:bg-red-600 px-4 py-2 text-sm min-w-[100px] w-auto mt-0 transition-all duration-200"
             disabled={loading}
-            style={{ 
-              background: "var(--error-color)", 
-              marginTop: 0, 
-              width: "auto", 
-              padding: "0.5rem 1rem", 
-              fontSize: "0.875rem",
-              minWidth: "100px"
-            }}
           >
-            {loading ? <span className="spinner" style={{ width: "14px", height: "14px" }}></span> : "Log Out"}
+            {loading ? <span className="spinner w-[14px] h-[14px]"></span> : "Log Out"}
           </button>
         </div>
 
-        <p className="heading-sub" style={{ marginBottom: "2.5rem" }}>
+        <p className="text-text-muted text-sm md:text-base mb-10 leading-relaxed">
           Upload sensitive files to encrypt them with AES-256-GCM.
         </p>
 
         {/* Upload Section */}
-        <div className="metadata-box" style={{ marginBottom: "2rem" }}>
-          <h3 style={{ marginBottom: "1rem", color: "#fff" }}>Encrypt & Upload File</h3>
-          <form onSubmit={handleFileUpload} style={{ display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}>
+        <div className="mt-8 p-6 bg-black/20 rounded-xl border border-dashed border-glass-border mb-8 animate-fade-in">
+          <h3 className="text-lg font-semibold text-white mb-4">Encrypt & Upload File</h3>
+          <form onSubmit={handleFileUpload} className="flex flex-wrap items-center gap-4">
             <input 
               type="file" 
               name="file" 
-              className="form-input" 
-              style={{ flex: "1 1 300px" }} 
+              className="flex-1 min-w-[300px] p-3 bg-input-bg border border-glass-border rounded-xl text-text-main focus:border-accent-primary outline-none transition-all" 
               required 
               disabled={uploading}
             />
             <button 
               type="submit" 
-              className="btn-primary" 
-              style={{ width: "auto", marginTop: 0, padding: "0.875rem 2rem" }} 
+              className="bg-accent-primary hover:bg-accent-hover text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-accent-primary/30 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed w-auto mt-0"
               disabled={uploading}
             >
               {uploading ? (
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div className="flex items-center gap-2">
                   <span className="spinner"></span>
                   <span>Encrypting...</span>
                 </div>
@@ -180,61 +184,48 @@ export default function HomePage() {
               )}
             </button>
           </form>
-          {error && <p className="error-msg" style={{ marginTop: "1rem", marginBottom: 0 }}>{error}</p>}
+          {error && <p className="text-error bg-error/10 p-3 rounded-lg border border-error/20 text-sm mt-4 animate-fade-in">{error}</p>}
         </div>
 
         {/* Files List */}
-        <div className="metadata-box">
-          <h3 style={{ marginBottom: "1rem", color: "#fff" }}>Your Encrypted Files</h3>
+        <div className="mt-8 p-6 bg-black/20 rounded-xl border border-dashed border-glass-border animate-fade-in">
+          <h3 className="text-lg font-semibold text-white mb-4">Your Encrypted Files</h3>
           {files.length === 0 ? (
-            <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", textAlign: "center", padding: "1rem 0" }}>
+            <p className="text-text-muted text-sm text-center py-4">
               No encrypted files found. Your vault is currently empty.
             </p>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <div className="flex flex-col gap-3">
               {files.map((file) => (
                 <div 
                   key={file.id} 
-                  style={{ 
-                    display: "flex", 
-                    justifyContent: "space-between", 
-                    alignItems: "center", 
-                    background: "rgba(255,255,255,0.03)", 
-                    padding: "1rem", 
-                    borderRadius: "12px",
-                    border: "1px solid var(--glass-border)",
-                    flexWrap: "wrap",
-                    gap: "1rem"
-                  }}
+                  className="flex flex-wrap items-center justify-between gap-4 p-4 bg-white/5 border border-glass-border rounded-xl hover:bg-white/10 transition-colors"
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "1rem", flex: "1 1 200px" }}>
-                    <div style={{ fontSize: "1.5rem" }}>📄</div>
-                    <div style={{ overflow: "hidden" }}>
-                      <div style={{ fontWeight: 600, fontSize: "0.95rem", color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{file.originalName}</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                  <div className="flex items-center gap-4 flex-1 min-w-[200px]">
+                    <div className="text-2xl">📄</div>
+                    <div className="overflow-hidden">
+                      <div className="font-semibold text-sm md:text-base text-white truncate">{file.originalName}</div>
+                      <div className="text-[10px] md:text-xs text-text-muted mt-0.5 uppercase tracking-wider">
                         {(file.size / 1024).toFixed(1)} KB • {new Date(file.createdAt).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
-                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "flex-start" }}>
+                  <div className="flex flex-wrap gap-2 justify-start">
                     <button 
                       onClick={() => handleDownload(file.id)}
-                      className="link"
-                      style={{ background: "rgba(59, 130, 246, 0.1)", border: "1px solid rgba(59, 130, 246, 0.2)", cursor: "pointer", fontSize: "0.825rem", padding: "0.5rem 0.75rem", borderRadius: "8px", textDecoration: "none" }}
+                      className="bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-xs font-semibold px-3 py-2 rounded-lg hover:bg-accent-primary/20 transition-all"
                     >
                       Decrypt
                     </button>
                     <button 
                       onClick={() => window.open(`/api/files/raw?id=${file.id}`, "_blank")}
-                      className="link"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid var(--glass-border)", cursor: "pointer", fontSize: "0.825rem", padding: "0.5rem 0.75rem", borderRadius: "8px", textDecoration: "none", color: "var(--text-muted)" }}
+                      className="bg-white/5 border border-glass-border text-text-muted text-xs font-semibold px-3 py-2 rounded-lg hover:bg-white/10 transition-all"
                     >
                       View Raw
                     </button>
                     <button 
                       onClick={() => setDeleteModal({ show: true, fileId: file.id })}
-                      className="link"
-                      style={{ background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.2)", cursor: "pointer", fontSize: "0.825rem", padding: "0.5rem 0.75rem", borderRadius: "8px", textDecoration: "none", color: "#ef4444" }}
+                      className="bg-error/10 border border-error/20 text-error text-xs font-semibold px-3 py-2 rounded-lg hover:bg-error/20 transition-all"
                     >
                       Delete
                     </button>
@@ -249,38 +240,23 @@ export default function HomePage() {
 
       {/* Custom Delete Confirmation Modal */}
       {deleteModal.show && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0,0,0,0.7)",
-          backdropFilter: "blur(8px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          animation: "fadeIn 0.2s ease"
-        }}>
-          <div className="glass-panel" style={{ maxWidth: "450px", textAlign: "center", padding: "2.5rem" }}>
-            <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⚠️</div>
-            <h2 className="heading-main" style={{ fontSize: "1.5rem" }}>Confirm Deletion</h2>
-            <p className="heading-sub" style={{ marginBottom: "2rem" }}>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-[1000] animate-fade-in p-4">
+          <div className="glass p-10 md:p-12 rounded-[24px] w-full max-w-[450px] text-center animate-slide-up">
+            <div className="text-5xl mb-4">⚠️</div>
+            <h2 className="text-2xl font-bold text-white mb-2">Confirm Deletion</h2>
+            <p className="text-text-muted text-sm leading-relaxed mb-8">
               Are you sure you want to permanently delete this encrypted file? This action cannot be undone.
             </p>
-            <div style={{ display: "flex", gap: "1rem" }}>
+            <div className="flex gap-4">
               <button 
-                className="btn-primary" 
-                style={{ background: "rgba(255,255,255,0.1)", border: "1px solid var(--glass-border)", marginTop: 0 }}
+                className="flex-1 bg-white/10 border border-glass-border text-white font-semibold py-3 px-4 rounded-xl hover:bg-white/20 transition-all"
                 onClick={() => setDeleteModal({ show: false, fileId: null })}
                 disabled={loading}
               >
                 Cancel
               </button>
               <button 
-                className="btn-primary" 
-                style={{ background: "#ef4444", marginTop: 0 }}
+                className="flex-1 bg-error text-white font-semibold py-3 px-4 rounded-xl hover:bg-red-600 transition-all shadow-lg shadow-error/30"
                 onClick={handleDelete}
                 disabled={loading}
               >

@@ -55,31 +55,31 @@ function LoginForm() {
   };
 
   return (
-    <div className="app-container">
-      <div className="glass-panel">
-        <h1 className="heading-main">Welcome Back</h1>
-        <p className="heading-sub">
+    <div className="flex min-h-screen items-center justify-center p-8">
+      <div className="glass p-8 md:p-12 rounded-[24px] w-full max-w-[440px] animate-slide-up">
+        <h1 className="text-3xl font-bold tracking-tight text-white mb-2 text-center">Welcome Back</h1>
+        <p className="text-text-muted text-sm md:text-base leading-relaxed mb-8 text-center">
           Please enter your credentials to log in.
         </p>
 
         {registered && (
-          <div style={{ color: "#34d399", background: "rgba(52, 211, 153, 0.1)", padding: "0.75rem", borderRadius: "8px", border: "1px solid rgba(52, 211, 153, 0.2)", fontSize: "0.875rem", marginBottom: "1.5rem" }}>
+          <div className="text-emerald-400 bg-emerald-400/10 p-3 rounded-lg border border-emerald-400/20 text-sm mb-6 animate-fade-in text-center">
             Account created seamlessly! Log in below.
           </div>
         )}
 
-        {error && <div className="error-msg">{error}</div>}
+        {error && <div className="text-error bg-error/10 p-3 rounded-lg border border-error/20 text-sm mb-6 animate-fade-in text-center">{error}</div>}
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="email">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-text-muted" htmlFor="email">
               Email Address
             </label>
             <input
               type="email"
               id="email"
               name="email"
-              className="form-input"
+              className="w-full p-3.5 bg-input-bg border border-glass-border rounded-xl text-text-main focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 outline-none transition-all"
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
@@ -88,15 +88,15 @@ function LoginForm() {
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="password">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-text-muted" htmlFor="password">
               Password
             </label>
             <input
               type="password"
               id="password"
               name="password"
-              className="form-input"
+              className="w-full p-3.5 bg-input-bg border border-glass-border rounded-xl text-text-main focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 outline-none transition-all"
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
@@ -105,14 +105,18 @@ function LoginForm() {
             />
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
+          <button 
+            type="submit" 
+            className="w-full bg-accent-primary hover:bg-accent-hover text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-accent-primary/30 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2" 
+            disabled={loading}
+          >
             {loading ? <span className="spinner"></span> : "Log In"}
           </button>
         </form>
 
-        <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.875rem", color: "var(--text-muted)" }}>
+        <p className="mt-8 text-center text-sm text-text-muted">
           Don't have an account?{" "}
-          <Link href="/signup" className="link">
+          <Link href="/signup" className="text-accent-primary font-semibold hover:underline transition-colors hover:text-blue-400">
             Sign up securely
           </Link>
         </p>
