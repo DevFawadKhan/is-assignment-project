@@ -30,12 +30,14 @@ export type EncryptedFileAvgAggregateOutputType = {
   id: number | null
   size: number | null
   userId: number | null
+  recipientId: number | null
 }
 
 export type EncryptedFileSumAggregateOutputType = {
   id: number | null
   size: number | null
   userId: number | null
+  recipientId: number | null
 }
 
 export type EncryptedFileMinAggregateOutputType = {
@@ -47,6 +49,7 @@ export type EncryptedFileMinAggregateOutputType = {
   iv: string | null
   createdAt: Date | null
   userId: number | null
+  recipientId: number | null
 }
 
 export type EncryptedFileMaxAggregateOutputType = {
@@ -58,6 +61,7 @@ export type EncryptedFileMaxAggregateOutputType = {
   iv: string | null
   createdAt: Date | null
   userId: number | null
+  recipientId: number | null
 }
 
 export type EncryptedFileCountAggregateOutputType = {
@@ -69,6 +73,7 @@ export type EncryptedFileCountAggregateOutputType = {
   iv: number
   createdAt: number
   userId: number
+  recipientId: number
   _all: number
 }
 
@@ -77,12 +82,14 @@ export type EncryptedFileAvgAggregateInputType = {
   id?: true
   size?: true
   userId?: true
+  recipientId?: true
 }
 
 export type EncryptedFileSumAggregateInputType = {
   id?: true
   size?: true
   userId?: true
+  recipientId?: true
 }
 
 export type EncryptedFileMinAggregateInputType = {
@@ -94,6 +101,7 @@ export type EncryptedFileMinAggregateInputType = {
   iv?: true
   createdAt?: true
   userId?: true
+  recipientId?: true
 }
 
 export type EncryptedFileMaxAggregateInputType = {
@@ -105,6 +113,7 @@ export type EncryptedFileMaxAggregateInputType = {
   iv?: true
   createdAt?: true
   userId?: true
+  recipientId?: true
 }
 
 export type EncryptedFileCountAggregateInputType = {
@@ -116,6 +125,7 @@ export type EncryptedFileCountAggregateInputType = {
   iv?: true
   createdAt?: true
   userId?: true
+  recipientId?: true
   _all?: true
 }
 
@@ -214,6 +224,7 @@ export type EncryptedFileGroupByOutputType = {
   iv: string
   createdAt: Date
   userId: number
+  recipientId: number | null
   _count: EncryptedFileCountAggregateOutputType | null
   _avg: EncryptedFileAvgAggregateOutputType | null
   _sum: EncryptedFileSumAggregateOutputType | null
@@ -248,7 +259,9 @@ export type EncryptedFileWhereInput = {
   iv?: Prisma.StringFilter<"EncryptedFile"> | string
   createdAt?: Prisma.DateTimeFilter<"EncryptedFile"> | Date | string
   userId?: Prisma.IntFilter<"EncryptedFile"> | number
+  recipientId?: Prisma.IntNullableFilter<"EncryptedFile"> | number | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  recipient?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type EncryptedFileOrderByWithRelationInput = {
@@ -260,7 +273,9 @@ export type EncryptedFileOrderByWithRelationInput = {
   iv?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  recipient?: Prisma.UserOrderByWithRelationInput
 }
 
 export type EncryptedFileWhereUniqueInput = Prisma.AtLeast<{
@@ -275,7 +290,9 @@ export type EncryptedFileWhereUniqueInput = Prisma.AtLeast<{
   iv?: Prisma.StringFilter<"EncryptedFile"> | string
   createdAt?: Prisma.DateTimeFilter<"EncryptedFile"> | Date | string
   userId?: Prisma.IntFilter<"EncryptedFile"> | number
+  recipientId?: Prisma.IntNullableFilter<"EncryptedFile"> | number | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  recipient?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "filename">
 
 export type EncryptedFileOrderByWithAggregationInput = {
@@ -287,6 +304,7 @@ export type EncryptedFileOrderByWithAggregationInput = {
   iv?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.EncryptedFileCountOrderByAggregateInput
   _avg?: Prisma.EncryptedFileAvgOrderByAggregateInput
   _max?: Prisma.EncryptedFileMaxOrderByAggregateInput
@@ -306,6 +324,7 @@ export type EncryptedFileScalarWhereWithAggregatesInput = {
   iv?: Prisma.StringWithAggregatesFilter<"EncryptedFile"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EncryptedFile"> | Date | string
   userId?: Prisma.IntWithAggregatesFilter<"EncryptedFile"> | number
+  recipientId?: Prisma.IntNullableWithAggregatesFilter<"EncryptedFile"> | number | null
 }
 
 export type EncryptedFileCreateInput = {
@@ -315,7 +334,8 @@ export type EncryptedFileCreateInput = {
   size: number
   iv: string
   createdAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutEncryptedFilesInput
+  user: Prisma.UserCreateNestedOneWithoutSentFilesInput
+  recipient?: Prisma.UserCreateNestedOneWithoutReceivedFilesInput
 }
 
 export type EncryptedFileUncheckedCreateInput = {
@@ -327,6 +347,7 @@ export type EncryptedFileUncheckedCreateInput = {
   iv: string
   createdAt?: Date | string
   userId: number
+  recipientId?: number | null
 }
 
 export type EncryptedFileUpdateInput = {
@@ -336,7 +357,8 @@ export type EncryptedFileUpdateInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   iv?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutEncryptedFilesNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutSentFilesNestedInput
+  recipient?: Prisma.UserUpdateOneWithoutReceivedFilesNestedInput
 }
 
 export type EncryptedFileUncheckedUpdateInput = {
@@ -348,6 +370,7 @@ export type EncryptedFileUncheckedUpdateInput = {
   iv?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
+  recipientId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type EncryptedFileCreateManyInput = {
@@ -359,6 +382,7 @@ export type EncryptedFileCreateManyInput = {
   iv: string
   createdAt?: Date | string
   userId: number
+  recipientId?: number | null
 }
 
 export type EncryptedFileUpdateManyMutationInput = {
@@ -379,6 +403,7 @@ export type EncryptedFileUncheckedUpdateManyInput = {
   iv?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
+  recipientId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type EncryptedFileCountOrderByAggregateInput = {
@@ -390,12 +415,14 @@ export type EncryptedFileCountOrderByAggregateInput = {
   iv?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrder
 }
 
 export type EncryptedFileAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   size?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrder
 }
 
 export type EncryptedFileMaxOrderByAggregateInput = {
@@ -407,6 +434,7 @@ export type EncryptedFileMaxOrderByAggregateInput = {
   iv?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrder
 }
 
 export type EncryptedFileMinOrderByAggregateInput = {
@@ -418,12 +446,14 @@ export type EncryptedFileMinOrderByAggregateInput = {
   iv?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrder
 }
 
 export type EncryptedFileSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   size?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrder
 }
 
 export type EncryptedFileListRelationFilter = {
@@ -452,6 +482,14 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type EncryptedFileCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.EncryptedFileCreateWithoutUserInput, Prisma.EncryptedFileUncheckedCreateWithoutUserInput> | Prisma.EncryptedFileCreateWithoutUserInput[] | Prisma.EncryptedFileUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.EncryptedFileCreateOrConnectWithoutUserInput | Prisma.EncryptedFileCreateOrConnectWithoutUserInput[]
@@ -459,10 +497,24 @@ export type EncryptedFileCreateNestedManyWithoutUserInput = {
   connect?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
 }
 
+export type EncryptedFileCreateNestedManyWithoutRecipientInput = {
+  create?: Prisma.XOR<Prisma.EncryptedFileCreateWithoutRecipientInput, Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput> | Prisma.EncryptedFileCreateWithoutRecipientInput[] | Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput[]
+  connectOrCreate?: Prisma.EncryptedFileCreateOrConnectWithoutRecipientInput | Prisma.EncryptedFileCreateOrConnectWithoutRecipientInput[]
+  createMany?: Prisma.EncryptedFileCreateManyRecipientInputEnvelope
+  connect?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+}
+
 export type EncryptedFileUncheckedCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.EncryptedFileCreateWithoutUserInput, Prisma.EncryptedFileUncheckedCreateWithoutUserInput> | Prisma.EncryptedFileCreateWithoutUserInput[] | Prisma.EncryptedFileUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.EncryptedFileCreateOrConnectWithoutUserInput | Prisma.EncryptedFileCreateOrConnectWithoutUserInput[]
   createMany?: Prisma.EncryptedFileCreateManyUserInputEnvelope
+  connect?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+}
+
+export type EncryptedFileUncheckedCreateNestedManyWithoutRecipientInput = {
+  create?: Prisma.XOR<Prisma.EncryptedFileCreateWithoutRecipientInput, Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput> | Prisma.EncryptedFileCreateWithoutRecipientInput[] | Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput[]
+  connectOrCreate?: Prisma.EncryptedFileCreateOrConnectWithoutRecipientInput | Prisma.EncryptedFileCreateOrConnectWithoutRecipientInput[]
+  createMany?: Prisma.EncryptedFileCreateManyRecipientInputEnvelope
   connect?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
 }
 
@@ -480,6 +532,20 @@ export type EncryptedFileUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.EncryptedFileScalarWhereInput | Prisma.EncryptedFileScalarWhereInput[]
 }
 
+export type EncryptedFileUpdateManyWithoutRecipientNestedInput = {
+  create?: Prisma.XOR<Prisma.EncryptedFileCreateWithoutRecipientInput, Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput> | Prisma.EncryptedFileCreateWithoutRecipientInput[] | Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput[]
+  connectOrCreate?: Prisma.EncryptedFileCreateOrConnectWithoutRecipientInput | Prisma.EncryptedFileCreateOrConnectWithoutRecipientInput[]
+  upsert?: Prisma.EncryptedFileUpsertWithWhereUniqueWithoutRecipientInput | Prisma.EncryptedFileUpsertWithWhereUniqueWithoutRecipientInput[]
+  createMany?: Prisma.EncryptedFileCreateManyRecipientInputEnvelope
+  set?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+  disconnect?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+  delete?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+  connect?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+  update?: Prisma.EncryptedFileUpdateWithWhereUniqueWithoutRecipientInput | Prisma.EncryptedFileUpdateWithWhereUniqueWithoutRecipientInput[]
+  updateMany?: Prisma.EncryptedFileUpdateManyWithWhereWithoutRecipientInput | Prisma.EncryptedFileUpdateManyWithWhereWithoutRecipientInput[]
+  deleteMany?: Prisma.EncryptedFileScalarWhereInput | Prisma.EncryptedFileScalarWhereInput[]
+}
+
 export type EncryptedFileUncheckedUpdateManyWithoutUserNestedInput = {
   create?: Prisma.XOR<Prisma.EncryptedFileCreateWithoutUserInput, Prisma.EncryptedFileUncheckedCreateWithoutUserInput> | Prisma.EncryptedFileCreateWithoutUserInput[] | Prisma.EncryptedFileUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.EncryptedFileCreateOrConnectWithoutUserInput | Prisma.EncryptedFileCreateOrConnectWithoutUserInput[]
@@ -494,6 +560,20 @@ export type EncryptedFileUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.EncryptedFileScalarWhereInput | Prisma.EncryptedFileScalarWhereInput[]
 }
 
+export type EncryptedFileUncheckedUpdateManyWithoutRecipientNestedInput = {
+  create?: Prisma.XOR<Prisma.EncryptedFileCreateWithoutRecipientInput, Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput> | Prisma.EncryptedFileCreateWithoutRecipientInput[] | Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput[]
+  connectOrCreate?: Prisma.EncryptedFileCreateOrConnectWithoutRecipientInput | Prisma.EncryptedFileCreateOrConnectWithoutRecipientInput[]
+  upsert?: Prisma.EncryptedFileUpsertWithWhereUniqueWithoutRecipientInput | Prisma.EncryptedFileUpsertWithWhereUniqueWithoutRecipientInput[]
+  createMany?: Prisma.EncryptedFileCreateManyRecipientInputEnvelope
+  set?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+  disconnect?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+  delete?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+  connect?: Prisma.EncryptedFileWhereUniqueInput | Prisma.EncryptedFileWhereUniqueInput[]
+  update?: Prisma.EncryptedFileUpdateWithWhereUniqueWithoutRecipientInput | Prisma.EncryptedFileUpdateWithWhereUniqueWithoutRecipientInput[]
+  updateMany?: Prisma.EncryptedFileUpdateManyWithWhereWithoutRecipientInput | Prisma.EncryptedFileUpdateManyWithWhereWithoutRecipientInput[]
+  deleteMany?: Prisma.EncryptedFileScalarWhereInput | Prisma.EncryptedFileScalarWhereInput[]
+}
+
 export type EncryptedFileCreateWithoutUserInput = {
   filename: string
   originalName: string
@@ -501,6 +581,7 @@ export type EncryptedFileCreateWithoutUserInput = {
   size: number
   iv: string
   createdAt?: Date | string
+  recipient?: Prisma.UserCreateNestedOneWithoutReceivedFilesInput
 }
 
 export type EncryptedFileUncheckedCreateWithoutUserInput = {
@@ -511,6 +592,7 @@ export type EncryptedFileUncheckedCreateWithoutUserInput = {
   size: number
   iv: string
   createdAt?: Date | string
+  recipientId?: number | null
 }
 
 export type EncryptedFileCreateOrConnectWithoutUserInput = {
@@ -520,6 +602,37 @@ export type EncryptedFileCreateOrConnectWithoutUserInput = {
 
 export type EncryptedFileCreateManyUserInputEnvelope = {
   data: Prisma.EncryptedFileCreateManyUserInput | Prisma.EncryptedFileCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type EncryptedFileCreateWithoutRecipientInput = {
+  filename: string
+  originalName: string
+  mimeType: string
+  size: number
+  iv: string
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutSentFilesInput
+}
+
+export type EncryptedFileUncheckedCreateWithoutRecipientInput = {
+  id?: number
+  filename: string
+  originalName: string
+  mimeType: string
+  size: number
+  iv: string
+  createdAt?: Date | string
+  userId: number
+}
+
+export type EncryptedFileCreateOrConnectWithoutRecipientInput = {
+  where: Prisma.EncryptedFileWhereUniqueInput
+  create: Prisma.XOR<Prisma.EncryptedFileCreateWithoutRecipientInput, Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput>
+}
+
+export type EncryptedFileCreateManyRecipientInputEnvelope = {
+  data: Prisma.EncryptedFileCreateManyRecipientInput | Prisma.EncryptedFileCreateManyRecipientInput[]
   skipDuplicates?: boolean
 }
 
@@ -551,6 +664,23 @@ export type EncryptedFileScalarWhereInput = {
   iv?: Prisma.StringFilter<"EncryptedFile"> | string
   createdAt?: Prisma.DateTimeFilter<"EncryptedFile"> | Date | string
   userId?: Prisma.IntFilter<"EncryptedFile"> | number
+  recipientId?: Prisma.IntNullableFilter<"EncryptedFile"> | number | null
+}
+
+export type EncryptedFileUpsertWithWhereUniqueWithoutRecipientInput = {
+  where: Prisma.EncryptedFileWhereUniqueInput
+  update: Prisma.XOR<Prisma.EncryptedFileUpdateWithoutRecipientInput, Prisma.EncryptedFileUncheckedUpdateWithoutRecipientInput>
+  create: Prisma.XOR<Prisma.EncryptedFileCreateWithoutRecipientInput, Prisma.EncryptedFileUncheckedCreateWithoutRecipientInput>
+}
+
+export type EncryptedFileUpdateWithWhereUniqueWithoutRecipientInput = {
+  where: Prisma.EncryptedFileWhereUniqueInput
+  data: Prisma.XOR<Prisma.EncryptedFileUpdateWithoutRecipientInput, Prisma.EncryptedFileUncheckedUpdateWithoutRecipientInput>
+}
+
+export type EncryptedFileUpdateManyWithWhereWithoutRecipientInput = {
+  where: Prisma.EncryptedFileScalarWhereInput
+  data: Prisma.XOR<Prisma.EncryptedFileUpdateManyMutationInput, Prisma.EncryptedFileUncheckedUpdateManyWithoutRecipientInput>
 }
 
 export type EncryptedFileCreateManyUserInput = {
@@ -561,6 +691,18 @@ export type EncryptedFileCreateManyUserInput = {
   size: number
   iv: string
   createdAt?: Date | string
+  recipientId?: number | null
+}
+
+export type EncryptedFileCreateManyRecipientInput = {
+  id?: number
+  filename: string
+  originalName: string
+  mimeType: string
+  size: number
+  iv: string
+  createdAt?: Date | string
+  userId: number
 }
 
 export type EncryptedFileUpdateWithoutUserInput = {
@@ -570,6 +712,7 @@ export type EncryptedFileUpdateWithoutUserInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   iv?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipient?: Prisma.UserUpdateOneWithoutReceivedFilesNestedInput
 }
 
 export type EncryptedFileUncheckedUpdateWithoutUserInput = {
@@ -580,6 +723,7 @@ export type EncryptedFileUncheckedUpdateWithoutUserInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   iv?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type EncryptedFileUncheckedUpdateManyWithoutUserInput = {
@@ -590,6 +734,39 @@ export type EncryptedFileUncheckedUpdateManyWithoutUserInput = {
   size?: Prisma.IntFieldUpdateOperationsInput | number
   iv?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type EncryptedFileUpdateWithoutRecipientInput = {
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.IntFieldUpdateOperationsInput | number
+  iv?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutSentFilesNestedInput
+}
+
+export type EncryptedFileUncheckedUpdateWithoutRecipientInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.IntFieldUpdateOperationsInput | number
+  iv?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type EncryptedFileUncheckedUpdateManyWithoutRecipientInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.IntFieldUpdateOperationsInput | number
+  iv?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
@@ -603,7 +780,9 @@ export type EncryptedFileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   iv?: boolean
   createdAt?: boolean
   userId?: boolean
+  recipientId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  recipient?: boolean | Prisma.EncryptedFile$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["encryptedFile"]>
 
 export type EncryptedFileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -615,7 +794,9 @@ export type EncryptedFileSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   iv?: boolean
   createdAt?: boolean
   userId?: boolean
+  recipientId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  recipient?: boolean | Prisma.EncryptedFile$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["encryptedFile"]>
 
 export type EncryptedFileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -627,7 +808,9 @@ export type EncryptedFileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   iv?: boolean
   createdAt?: boolean
   userId?: boolean
+  recipientId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  recipient?: boolean | Prisma.EncryptedFile$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["encryptedFile"]>
 
 export type EncryptedFileSelectScalar = {
@@ -639,23 +822,28 @@ export type EncryptedFileSelectScalar = {
   iv?: boolean
   createdAt?: boolean
   userId?: boolean
+  recipientId?: boolean
 }
 
-export type EncryptedFileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "filename" | "originalName" | "mimeType" | "size" | "iv" | "createdAt" | "userId", ExtArgs["result"]["encryptedFile"]>
+export type EncryptedFileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "filename" | "originalName" | "mimeType" | "size" | "iv" | "createdAt" | "userId" | "recipientId", ExtArgs["result"]["encryptedFile"]>
 export type EncryptedFileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  recipient?: boolean | Prisma.EncryptedFile$recipientArgs<ExtArgs>
 }
 export type EncryptedFileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  recipient?: boolean | Prisma.EncryptedFile$recipientArgs<ExtArgs>
 }
 export type EncryptedFileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  recipient?: boolean | Prisma.EncryptedFile$recipientArgs<ExtArgs>
 }
 
 export type $EncryptedFilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "EncryptedFile"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    recipient: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -666,6 +854,7 @@ export type $EncryptedFilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     iv: string
     createdAt: Date
     userId: number
+    recipientId: number | null
   }, ExtArgs["result"]["encryptedFile"]>
   composites: {}
 }
@@ -1061,6 +1250,7 @@ readonly fields: EncryptedFileFieldRefs;
 export interface Prisma__EncryptedFileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  recipient<T extends Prisma.EncryptedFile$recipientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EncryptedFile$recipientArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1098,6 +1288,7 @@ export interface EncryptedFileFieldRefs {
   readonly iv: Prisma.FieldRef<"EncryptedFile", 'String'>
   readonly createdAt: Prisma.FieldRef<"EncryptedFile", 'DateTime'>
   readonly userId: Prisma.FieldRef<"EncryptedFile", 'Int'>
+  readonly recipientId: Prisma.FieldRef<"EncryptedFile", 'Int'>
 }
     
 
@@ -1496,6 +1687,25 @@ export type EncryptedFileDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many EncryptedFiles to delete.
    */
   limit?: number
+}
+
+/**
+ * EncryptedFile.recipient
+ */
+export type EncryptedFile$recipientArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

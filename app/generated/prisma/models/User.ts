@@ -39,7 +39,9 @@ export type UserMinAggregateOutputType = {
   name: string | null
   email: string | null
   password: string | null
+  profileImage: string | null
   role: $Enums.Role | null
+  isBlocked: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -49,7 +51,9 @@ export type UserMaxAggregateOutputType = {
   name: string | null
   email: string | null
   password: string | null
+  profileImage: string | null
   role: $Enums.Role | null
+  isBlocked: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -59,7 +63,9 @@ export type UserCountAggregateOutputType = {
   name: number
   email: number
   password: number
+  profileImage: number
   role: number
+  isBlocked: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -79,7 +85,9 @@ export type UserMinAggregateInputType = {
   name?: true
   email?: true
   password?: true
+  profileImage?: true
   role?: true
+  isBlocked?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -89,7 +97,9 @@ export type UserMaxAggregateInputType = {
   name?: true
   email?: true
   password?: true
+  profileImage?: true
   role?: true
+  isBlocked?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -99,7 +109,9 @@ export type UserCountAggregateInputType = {
   name?: true
   email?: true
   password?: true
+  profileImage?: true
   role?: true
+  isBlocked?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -196,7 +208,9 @@ export type UserGroupByOutputType = {
   name: string
   email: string
   password: string
+  profileImage: string | null
   role: $Enums.Role
+  isBlocked: boolean
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -229,10 +243,13 @@ export type UserWhereInput = {
   name?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
+  profileImage?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  isBlocked?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  encryptedFiles?: Prisma.EncryptedFileListRelationFilter
+  sentFiles?: Prisma.EncryptedFileListRelationFilter
+  receivedFiles?: Prisma.EncryptedFileListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -240,10 +257,13 @@ export type UserOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  encryptedFiles?: Prisma.EncryptedFileOrderByRelationAggregateInput
+  sentFiles?: Prisma.EncryptedFileOrderByRelationAggregateInput
+  receivedFiles?: Prisma.EncryptedFileOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -254,10 +274,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
+  profileImage?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  isBlocked?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  encryptedFiles?: Prisma.EncryptedFileListRelationFilter
+  sentFiles?: Prisma.EncryptedFileListRelationFilter
+  receivedFiles?: Prisma.EncryptedFileListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -265,7 +288,9 @@ export type UserOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -283,7 +308,9 @@ export type UserScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
+  profileImage?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
+  isBlocked?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -292,10 +319,13 @@ export type UserCreateInput = {
   name: string
   email: string
   password: string
+  profileImage?: string | null
   role?: $Enums.Role
+  isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  encryptedFiles?: Prisma.EncryptedFileCreateNestedManyWithoutUserInput
+  sentFiles?: Prisma.EncryptedFileCreateNestedManyWithoutUserInput
+  receivedFiles?: Prisma.EncryptedFileCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -303,20 +333,26 @@ export type UserUncheckedCreateInput = {
   name: string
   email: string
   password: string
+  profileImage?: string | null
   role?: $Enums.Role
+  isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  encryptedFiles?: Prisma.EncryptedFileUncheckedCreateNestedManyWithoutUserInput
+  sentFiles?: Prisma.EncryptedFileUncheckedCreateNestedManyWithoutUserInput
+  receivedFiles?: Prisma.EncryptedFileUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  encryptedFiles?: Prisma.EncryptedFileUpdateManyWithoutUserNestedInput
+  sentFiles?: Prisma.EncryptedFileUpdateManyWithoutUserNestedInput
+  receivedFiles?: Prisma.EncryptedFileUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -324,10 +360,13 @@ export type UserUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  encryptedFiles?: Prisma.EncryptedFileUncheckedUpdateManyWithoutUserNestedInput
+  sentFiles?: Prisma.EncryptedFileUncheckedUpdateManyWithoutUserNestedInput
+  receivedFiles?: Prisma.EncryptedFileUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -335,7 +374,9 @@ export type UserCreateManyInput = {
   name: string
   email: string
   password: string
+  profileImage?: string | null
   role?: $Enums.Role
+  isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -344,7 +385,9 @@ export type UserUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -354,7 +397,9 @@ export type UserUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -364,12 +409,19 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -383,7 +435,9 @@ export type UserMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -393,7 +447,9 @@ export type UserMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -402,76 +458,178 @@ export type UserSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
 }
 
-export type UserCreateNestedOneWithoutEncryptedFilesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutEncryptedFilesInput, Prisma.UserUncheckedCreateWithoutEncryptedFilesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEncryptedFilesInput
+export type UserCreateNestedOneWithoutSentFilesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentFilesInput, Prisma.UserUncheckedCreateWithoutSentFilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentFilesInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutEncryptedFilesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutEncryptedFilesInput, Prisma.UserUncheckedCreateWithoutEncryptedFilesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEncryptedFilesInput
-  upsert?: Prisma.UserUpsertWithoutEncryptedFilesInput
+export type UserCreateNestedOneWithoutReceivedFilesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedFilesInput, Prisma.UserUncheckedCreateWithoutReceivedFilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedFilesInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEncryptedFilesInput, Prisma.UserUpdateWithoutEncryptedFilesInput>, Prisma.UserUncheckedUpdateWithoutEncryptedFilesInput>
+}
+
+export type UserUpdateOneRequiredWithoutSentFilesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentFilesInput, Prisma.UserUncheckedCreateWithoutSentFilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentFilesInput
+  upsert?: Prisma.UserUpsertWithoutSentFilesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSentFilesInput, Prisma.UserUpdateWithoutSentFilesInput>, Prisma.UserUncheckedUpdateWithoutSentFilesInput>
+}
+
+export type UserUpdateOneWithoutReceivedFilesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedFilesInput, Prisma.UserUncheckedCreateWithoutReceivedFilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedFilesInput
+  upsert?: Prisma.UserUpsertWithoutReceivedFilesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReceivedFilesInput, Prisma.UserUpdateWithoutReceivedFilesInput>, Prisma.UserUncheckedUpdateWithoutReceivedFilesInput>
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
 }
 
-export type UserCreateWithoutEncryptedFilesInput = {
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type UserCreateWithoutSentFilesInput = {
   name: string
   email: string
   password: string
+  profileImage?: string | null
   role?: $Enums.Role
+  isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  receivedFiles?: Prisma.EncryptedFileCreateNestedManyWithoutRecipientInput
 }
 
-export type UserUncheckedCreateWithoutEncryptedFilesInput = {
+export type UserUncheckedCreateWithoutSentFilesInput = {
   id?: number
   name: string
   email: string
   password: string
+  profileImage?: string | null
   role?: $Enums.Role
+  isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  receivedFiles?: Prisma.EncryptedFileUncheckedCreateNestedManyWithoutRecipientInput
 }
 
-export type UserCreateOrConnectWithoutEncryptedFilesInput = {
+export type UserCreateOrConnectWithoutSentFilesInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutEncryptedFilesInput, Prisma.UserUncheckedCreateWithoutEncryptedFilesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentFilesInput, Prisma.UserUncheckedCreateWithoutSentFilesInput>
 }
 
-export type UserUpsertWithoutEncryptedFilesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutEncryptedFilesInput, Prisma.UserUncheckedUpdateWithoutEncryptedFilesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutEncryptedFilesInput, Prisma.UserUncheckedCreateWithoutEncryptedFilesInput>
+export type UserCreateWithoutReceivedFilesInput = {
+  name: string
+  email: string
+  password: string
+  profileImage?: string | null
+  role?: $Enums.Role
+  isBlocked?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sentFiles?: Prisma.EncryptedFileCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReceivedFilesInput = {
+  id?: number
+  name: string
+  email: string
+  password: string
+  profileImage?: string | null
+  role?: $Enums.Role
+  isBlocked?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sentFiles?: Prisma.EncryptedFileUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReceivedFilesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedFilesInput, Prisma.UserUncheckedCreateWithoutReceivedFilesInput>
+}
+
+export type UserUpsertWithoutSentFilesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSentFilesInput, Prisma.UserUncheckedUpdateWithoutSentFilesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentFilesInput, Prisma.UserUncheckedCreateWithoutSentFilesInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutEncryptedFilesInput = {
+export type UserUpdateToOneWithWhereWithoutSentFilesInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutEncryptedFilesInput, Prisma.UserUncheckedUpdateWithoutEncryptedFilesInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSentFilesInput, Prisma.UserUncheckedUpdateWithoutSentFilesInput>
 }
 
-export type UserUpdateWithoutEncryptedFilesInput = {
+export type UserUpdateWithoutSentFilesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  receivedFiles?: Prisma.EncryptedFileUpdateManyWithoutRecipientNestedInput
 }
 
-export type UserUncheckedUpdateWithoutEncryptedFilesInput = {
+export type UserUncheckedUpdateWithoutSentFilesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  receivedFiles?: Prisma.EncryptedFileUncheckedUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserUpsertWithoutReceivedFilesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReceivedFilesInput, Prisma.UserUncheckedUpdateWithoutReceivedFilesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedFilesInput, Prisma.UserUncheckedCreateWithoutReceivedFilesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReceivedFilesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReceivedFilesInput, Prisma.UserUncheckedUpdateWithoutReceivedFilesInput>
+}
+
+export type UserUpdateWithoutReceivedFilesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sentFiles?: Prisma.EncryptedFileUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReceivedFilesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sentFiles?: Prisma.EncryptedFileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -480,11 +638,13 @@ export type UserUncheckedUpdateWithoutEncryptedFilesInput = {
  */
 
 export type UserCountOutputType = {
-  encryptedFiles: number
+  sentFiles: number
+  receivedFiles: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  encryptedFiles?: boolean | UserCountOutputTypeCountEncryptedFilesArgs
+  sentFiles?: boolean | UserCountOutputTypeCountSentFilesArgs
+  receivedFiles?: boolean | UserCountOutputTypeCountReceivedFilesArgs
 }
 
 /**
@@ -500,7 +660,14 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountEncryptedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type UserCountOutputTypeCountSentFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EncryptedFileWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReceivedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EncryptedFileWhereInput
 }
 
@@ -510,10 +677,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   email?: boolean
   password?: boolean
+  profileImage?: boolean
   role?: boolean
+  isBlocked?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  encryptedFiles?: boolean | Prisma.User$encryptedFilesArgs<ExtArgs>
+  sentFiles?: boolean | Prisma.User$sentFilesArgs<ExtArgs>
+  receivedFiles?: boolean | Prisma.User$receivedFilesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -522,7 +692,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   email?: boolean
   password?: boolean
+  profileImage?: boolean
   role?: boolean
+  isBlocked?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -532,7 +704,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   email?: boolean
   password?: boolean
+  profileImage?: boolean
   role?: boolean
+  isBlocked?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -542,14 +716,17 @@ export type UserSelectScalar = {
   name?: boolean
   email?: boolean
   password?: boolean
+  profileImage?: boolean
   role?: boolean
+  isBlocked?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "profileImage" | "role" | "isBlocked" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  encryptedFiles?: boolean | Prisma.User$encryptedFilesArgs<ExtArgs>
+  sentFiles?: boolean | Prisma.User$sentFilesArgs<ExtArgs>
+  receivedFiles?: boolean | Prisma.User$receivedFilesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -558,14 +735,17 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    encryptedFiles: Prisma.$EncryptedFilePayload<ExtArgs>[]
+    sentFiles: Prisma.$EncryptedFilePayload<ExtArgs>[]
+    receivedFiles: Prisma.$EncryptedFilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
     email: string
     password: string
+    profileImage: string | null
     role: $Enums.Role
+    isBlocked: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -962,7 +1142,8 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  encryptedFiles<T extends Prisma.User$encryptedFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$encryptedFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EncryptedFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sentFiles<T extends Prisma.User$sentFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EncryptedFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  receivedFiles<T extends Prisma.User$receivedFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$receivedFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EncryptedFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -996,7 +1177,9 @@ export interface UserFieldRefs {
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
+  readonly profileImage: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
+  readonly isBlocked: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -1392,9 +1575,33 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.encryptedFiles
+ * User.sentFiles
  */
-export type User$encryptedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$sentFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EncryptedFile
+   */
+  select?: Prisma.EncryptedFileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EncryptedFile
+   */
+  omit?: Prisma.EncryptedFileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EncryptedFileInclude<ExtArgs> | null
+  where?: Prisma.EncryptedFileWhereInput
+  orderBy?: Prisma.EncryptedFileOrderByWithRelationInput | Prisma.EncryptedFileOrderByWithRelationInput[]
+  cursor?: Prisma.EncryptedFileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EncryptedFileScalarFieldEnum | Prisma.EncryptedFileScalarFieldEnum[]
+}
+
+/**
+ * User.receivedFiles
+ */
+export type User$receivedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the EncryptedFile
    */

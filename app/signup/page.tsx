@@ -47,10 +47,10 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-8">
-      <div className="glass p-8 md:p-12 rounded-[24px] w-full max-w-[440px] animate-slide-up">
-        <h1 className="text-3xl font-bold tracking-tight text-white mb-2 text-center">Create Account</h1>
-        <p className="text-text-muted text-sm md:text-base leading-relaxed mb-8 text-center">
+    <div className="flex min-h-screen items-center justify-center p-8 bg-black">
+      <div className="bg-white p-8 md:p-12 rounded-[24px] w-full max-w-[440px] animate-slide-up shadow-2xl border border-gray-100">
+        <h1 className="text-3xl font-bold tracking-tight text-black mb-2 text-center">Create Account</h1>
+        <p className="text-gray-500 text-sm md:text-base leading-relaxed mb-8 text-center">
           Join us today. Enter your details to get started.
         </p>
 
@@ -58,14 +58,14 @@ export default function SignupPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-text-muted" htmlFor="name">
+            <label className="block text-sm font-bold text-gray-700" htmlFor="name">
               Full Name
             </label>
             <input
               type="text"
               id="name"
               name="name"
-              className="w-full p-3.5 bg-input-bg border border-glass-border rounded-xl text-text-main focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 outline-none transition-all"
+              className="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-black focus:border-black focus:ring-2 focus:ring-black/10 outline-none transition-all"
               placeholder="Fawad Khan"
               value={formData.name}
               onChange={handleChange}
@@ -75,14 +75,14 @@ export default function SignupPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-text-muted" htmlFor="email">
+            <label className="block text-sm font-bold text-gray-700" htmlFor="email">
               Email Address
             </label>
             <input
               type="email"
               id="email"
               name="email"
-              className="w-full p-3.5 bg-input-bg border border-glass-border rounded-xl text-text-main focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 outline-none transition-all"
+              className="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-black focus:border-black focus:ring-2 focus:ring-black/10 outline-none transition-all"
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
@@ -92,14 +92,14 @@ export default function SignupPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-text-muted" htmlFor="password">
+            <label className="block text-sm font-bold text-gray-700" htmlFor="password">
               Password
             </label>
             <input
               type="password"
               id="password"
               name="password"
-              className="w-full p-3.5 bg-input-bg border border-glass-border rounded-xl text-text-main focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 outline-none transition-all"
+              className="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-black focus:border-black focus:ring-2 focus:ring-black/10 outline-none transition-all"
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
@@ -111,16 +111,16 @@ export default function SignupPage() {
 
           <button 
             type="submit" 
-            className="w-full bg-accent-primary hover:bg-accent-hover text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-accent-primary/30 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2" 
+            className="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-black/20 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2" 
             disabled={loading}
           >
-            {loading ? <span className="spinner"></span> : "Sign Up"}
+            {loading ? <span className="spinner border-white"></span> : "Sign Up"}
           </button>
         </form>
 
-        <p className="mt-8 text-center text-sm text-text-muted">
+        <p className="mt-8 text-center text-sm text-gray-500">
           Already have an account?{" "}
-          <Link href="/login" className="text-accent-primary font-semibold hover:underline transition-colors hover:text-blue-400">
+          <Link href="/login" className="text-black font-bold hover:underline transition-colors">
             Log in here
           </Link>
         </p>

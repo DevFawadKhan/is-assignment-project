@@ -26,9 +26,13 @@ export async function POST(req: Request) {
 
     const userId = parseInt(decoded.id);
 
-    // 2. Extract standard file streaming binaries
+    // 2. Extract standard file streaming binaries and mapping associations
     const formData = await req.formData();
     const file = formData.get("file") as File;
+    
+    // Inject Recipient Access Mapping securely if declared structurally
+    const recipientIdRaw = formData.get("recipientId") as string | null;
+    const recipientId = recipientIdRaw && !isNaN(parseInt(recipientIdRaw)) ? parseInt(recipientIdRaw) : null;
 
     if (!file) {
       return NextResponse.json({ message: "No file detected inside the payload." }, { status: 400 });
@@ -65,6 +69,7 @@ export async function POST(req: Request) {
         size: file.size,
         iv: iv,
         userId: userId,
+        recipientId: recipientId,
       },
     });
 

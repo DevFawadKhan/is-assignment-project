@@ -43,8 +43,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "Encrypted memory blob disconnected or missing completely." }, { status: 404 });
     }
 
-    // Military-grade constraint checking assuring only the strictly mapped authorized user unlocks the structural AES payload logically!
-    if (fileRecord.userId !== userId) {
+    // Military-grade constraint checking assuring only the strictly mapped authorized user OR implicitly selected recipient unlocks the structural AES payload logically!
+    if (fileRecord.userId !== userId && fileRecord.recipientId !== userId) {
       return NextResponse.json({ message: "Forbidden Access: You do not have encrypted ownership permissions associated properly natively." }, { status: 403 });
     }
 
@@ -74,9 +74,10 @@ export async function GET(req: Request) {
     const decryptedBuffer = decryptBuffer(encryptedBuffer, fileRecord.iv);
 
     // 6. Clean HTTP flush natively
+    const inline = searchParams.get("inline") === "true";
     const headers = new Headers();
     headers.set("Content-Type", fileRecord.mimeType);
-    headers.set("Content-Disposition", `attachment; filename="${fileRecord.originalName}"`);
+    headers.set("Content-Disposition", inline ? "inline" : `attachment; filename="${fileRecord.originalName}"`);
     headers.set("Content-Length", decryptedBuffer.length.toString());
 
     return new NextResponse(new Uint8Array(decryptedBuffer), {

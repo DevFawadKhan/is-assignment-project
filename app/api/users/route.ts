@@ -8,37 +8,32 @@ export async function GET() {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth-token")?.value;
 
-    if (!token) {
-      return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
-    }
+    if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const secret = process.env.AUTH_SECRET || "fallback_secret_for_development";
     let decoded: any;
     try {
       decoded = jwt.verify(token, secret);
-    } catch (e) {
-      return NextResponse.json({ message: "Invalid session" }, { status: 401 });
+    } catch {
+      return NextResponse.json({ message: "Session Invalid" }, { status: 401 });
     }
 
-    // Double check the user exists in the database to be safe
-    const user = await prisma.user.findUnique({
-      where: { id: parseInt(decoded.id) },
+    // Explicitly excluding passwords and sensitive flags during Edge fetching natively
+    const users = await prisma.user.findMany({
+      where: {
+        id: { not: parseInt(decoded.id) } // Don't return the logged-in user in the recipient dropdown!
+      },
       select: {
         id: true,
         name: true,
         email: true,
-        role: true,
-        profileImage: true,
       },
+      orderBy: { name: "asc" }
     });
 
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({ user }, { status: 200 });
+    return NextResponse.json({ users }, { status: 200 });
   } catch (error) {
-    console.error("Auth Me API Error:", error);
+    console.error("Fetch Users API Error:", error);
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

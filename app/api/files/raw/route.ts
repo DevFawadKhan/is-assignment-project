@@ -34,7 +34,7 @@ export async function GET(req: Request) {
       where: { id: parseInt(fileId) },
     });
 
-    if (!fileRecord || fileRecord.userId !== userId) {
+    if (!fileRecord || (fileRecord.userId !== userId && fileRecord.recipientId !== userId)) {
       return NextResponse.json({ message: "Access Denied" }, { status: 403 });
     }
 
@@ -57,13 +57,15 @@ export async function GET(req: Request) {
       encryptedBuffer = await fs.readFile(filePath);
     }
 
+    const download = searchParams.get("download") === "true";
+
     // We serve this as text/plain so the browser displays the scrambled "garbage" characters 
     // to prove the file is actually encrypted on the disk.
     return new NextResponse(new Uint8Array(encryptedBuffer), {
       status: 200,
       headers: {
         "Content-Type": "text/plain",
-        "Content-Disposition": "inline", 
+        "Content-Disposition": download ? `attachment; filename="${fileRecord.originalName}.encrypted"` : "inline", 
       },
     });
   } catch (error) {

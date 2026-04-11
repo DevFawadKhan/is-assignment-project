@@ -8,10 +8,12 @@ model User{
     name String
     email String @unique
     password String
+    profileImage String?
     role Role @default(USER)
+    isBlocked Boolean @default(false)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-
     // Bidirectional mapped relational integrity pointing toward authorized AES files inherently tracking ownership natively
-    encryptedFiles EncryptedFile[]
+    sentFiles EncryptedFile[] @relation("SentFiles")
+    receivedFiles EncryptedFile[] @relation("ReceivedFiles")
 }

@@ -600,7 +600,8 @@ export const EncryptedFileScalarFieldEnum = {
   size: 'size',
   iv: 'iv',
   createdAt: 'createdAt',
-  userId: 'userId'
+  userId: 'userId',
+  recipientId: 'recipientId'
 } as const
 
 export type EncryptedFileScalarFieldEnum = (typeof EncryptedFileScalarFieldEnum)[keyof typeof EncryptedFileScalarFieldEnum]
@@ -611,7 +612,9 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  profileImage: 'profileImage',
   role: 'role',
+  isBlocked: 'isBlocked',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -633,6 +636,14 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -694,6 +705,13 @@ export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'Role[]'
  */
 export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

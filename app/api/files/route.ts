@@ -22,15 +22,17 @@ export async function GET(req: Request) {
 
     const userId = parseInt(decoded.id);
 
-    // Only query AES records securely bound to the authenticated user cleanly natively
+    // Query AES records securely bound to the authenticated user natively, either originating natively from them OR exclusively targeted to them
     const files = await prisma.encryptedFile.findMany({
-      where: { userId: userId },
-      select: {
-        id: true,
-        originalName: true,
-        mimeType: true,
-        size: true,
-        createdAt: true,
+      where: {
+        OR: [
+          { userId: userId },
+          { recipientId: userId }
+        ]
+      },
+      include: {
+        user: { select: { name: true, email: true } },
+        recipient: { select: { name: true, email: true } }
       },
       orderBy: { createdAt: "desc" },
     });

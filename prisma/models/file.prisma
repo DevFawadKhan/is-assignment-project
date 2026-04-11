@@ -9,5 +9,9 @@ model EncryptedFile {
   
   // Relational context strictly preventing foreign users from decrypting unauthorized records
   userId       Int
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation("SentFiles", fields: [userId], references: [id], onDelete: Cascade)
+
+  // Explicit Secure Sharing Mechanism mapping strictly point-to-point via relational integrity
+  recipientId  Int?
+  recipient    User?     @relation("ReceivedFiles", fields: [recipientId], references: [id], onDelete: SetNull)
 }

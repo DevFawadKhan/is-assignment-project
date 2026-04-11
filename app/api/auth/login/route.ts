@@ -26,6 +26,14 @@ export async function POST(req: Request) {
       );
     }
 
+    // Deny suspended accounts natively
+    if (user.isBlocked) {
+      return NextResponse.json(
+        { message: "Your account has been suspended by an administrator." },
+        { status: 403 }
+      );
+    }
+
     // Check password
     const passwordMatch = await bcrypt.compare(password, user.password);
 
