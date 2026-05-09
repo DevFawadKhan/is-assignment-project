@@ -1,9 +1,16 @@
+import "dotenv/config";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 async function main() {
-  const adminEmail = "admin@gmail.com";
-  const passwordHash = await bcrypt.hash("admin@123", 10);
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD must be set in .env file");
+  }
+
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
 
   const existingAdmin = await prisma.user.findUnique({
     where: { email: adminEmail },
@@ -12,7 +19,7 @@ async function main() {
   if (!existingAdmin) {
     await prisma.user.create({
       data: {
-        name: "Super Admin",
+        name: "Admin",
         email: adminEmail,
         password: passwordHash,
         role: "ADMIN",
