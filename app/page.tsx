@@ -397,7 +397,7 @@ export default function HomePage() {
 
     try {
       const res = await fetch("/api/auth/update", {
-        method: "POST",
+        method: "PATCH",
         // Using native multipart/form-data implicitly configured by the browser
         body: formData,
       });

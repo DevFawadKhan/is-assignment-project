@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -19,10 +21,38 @@ export default function SignupPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validatePassword = (pass: string) => {
+    const minLength = pass.length >= 6;
+    const hasUpper = /[A-Z]/.test(pass);
+    const hasLower = /[a-z]/.test(pass);
+    const hasNumber = /[0-9]/.test(pass);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pass);
+
+    if (!minLength) return "Password must be at least 6 characters long.";
+    if (!hasUpper) return "Password must contain at least one uppercase letter.";
+    if (!hasLower) return "Password must contain at least one lowercase letter.";
+    if (!hasNumber) return "Password must contain at least one number.";
+    if (!hasSpecial) return "Password must contain at least one special character.";
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Basic Email Validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    // Password Validation
+    const passError = validatePassword(formData.password);
+    if (passError) {
+      toast.error(passError);
+      return;
+    }
+
     setLoading(true);
-    setError(null);
 
     try {
       const res = await fetch("/api/auth/signup", {
@@ -37,10 +67,10 @@ export default function SignupPage() {
         throw new Error(data.message || "Failed to sign up");
       }
 
-      // Automatically push the user directly to the login interface so they can use their new credentials
+      toast.success("Account created successfully! Please log in.");
       router.push("/login?registered=true");
     } catch (err: any) {
-      setError(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -53,8 +83,6 @@ export default function SignupPage() {
         <p className="text-gray-500 text-sm md:text-base leading-relaxed mb-8 text-center">
           Join us today. Enter your details to get started.
         </p>
-
-        {error && <div className="text-error bg-error/10 p-3 rounded-lg border border-error/20 text-sm mb-6 animate-fade-in text-center">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -95,18 +123,27 @@ export default function SignupPage() {
             <label className="block text-sm font-bold text-gray-700" htmlFor="password">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              className="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-black focus:border-black focus:ring-2 focus:ring-black/10 outline-none transition-all"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              disabled={loading}
-              minLength={6}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                className="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-black focus:border-black focus:ring-2 focus:ring-black/10 outline-none transition-all pr-12"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+              <button
+                type="button"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
           <button 

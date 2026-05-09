@@ -14,6 +14,15 @@ export async function POST(req: Request) {
       );
     }
 
+    // Password Complexity Validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
+    if (!passwordRegex.test(password)) {
+      return NextResponse.json(
+        { message: "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character." },
+        { status: 400 },
+      );
+    }
+
     // Check if the user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },

@@ -3,17 +3,18 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [registered, setRegistered] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (searchParams.get("registered") === "true") {
-      setRegistered(true);
+      toast.info("Account created seamlessly! Log in below.");
     }
   }, [searchParams]);
 
@@ -29,8 +30,6 @@ function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-    setRegistered(false);
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -45,10 +44,10 @@ function LoginForm() {
         throw new Error(data.message || "Failed to log in");
       }
 
-      // Automatically redirect to the dashboard/home upon successful login
+      toast.success("Welcome back!");
       router.push("/");
     } catch (err: any) {
-      setError(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -61,14 +60,6 @@ function LoginForm() {
         <p className="text-gray-500 text-sm md:text-base leading-relaxed mb-8 text-center">
           Please enter your credentials to log in.
         </p>
-
-        {registered && (
-          <div className="text-emerald-400 bg-emerald-400/10 p-3 rounded-lg border border-emerald-400/20 text-sm mb-6 animate-fade-in text-center">
-            Account created seamlessly! Log in below.
-          </div>
-        )}
-
-        {error && <div className="text-error bg-error/10 p-3 rounded-lg border border-error/20 text-sm mb-6 animate-fade-in text-center">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -92,17 +83,27 @@ function LoginForm() {
             <label className="block text-sm font-bold text-gray-700" htmlFor="password">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              className="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-black focus:border-black focus:ring-2 focus:ring-black/10 outline-none transition-all"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                className="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-black focus:border-black focus:ring-2 focus:ring-black/10 outline-none transition-all pr-12"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+              <button
+                type="button"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
           <button 
