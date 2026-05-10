@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import axios from "axios";
 import {
   ShieldCheck,
   Settings,
@@ -100,9 +101,8 @@ export default function HomePage() {
 
   const fetchUsersList = async () => {
     try {
-      const res = await fetch("/api/users");
-      const data = await res.json();
-      if (res.ok) setUsers(data.users);
+      const res = await axios.get("/api/users");
+      setUsers(res.data.users);
     } catch (err) {
       console.error("Failed to fetch users list", err);
     }
@@ -110,11 +110,8 @@ export default function HomePage() {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch("/api/auth/me");
-      const data = await res.json();
-      if (res.ok) {
-        setUser(data.user);
-      }
+      const res = await axios.get("/api/auth/me");
+      setUser(res.data.user);
     } catch (err) {
       console.error("Failed to fetch user info", err);
     }
@@ -122,11 +119,8 @@ export default function HomePage() {
 
   const fetchFiles = async () => {
     try {
-      const res = await fetch("/api/files");
-      const data = await res.json();
-      if (res.ok) {
-        setFiles(data.files);
-      }
+      const res = await axios.get("/api/files");
+      setFiles(res.data.files);
     } catch (err) {
       console.error("Failed to fetch files", err);
     }
@@ -143,20 +137,15 @@ export default function HomePage() {
     setError(null);
 
     try {
-      const res = await fetch("/api/files/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Upload failed");
+      await axios.post("/api/files/upload", formData);
 
       toast.success("File uploaded and encrypted successfully!");
       form.reset();
       fetchFiles();
     } catch (err: any) {
-      setError(err.message);
-      toast.error(err.message);
+      const msg = err.response?.data?.message || "Upload failed";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setUploading(false);
     }
@@ -183,18 +172,13 @@ export default function HomePage() {
 
     setLoading(true);
     try {
-      const res = await fetch(`/api/files/delete?id=${deleteModal.fileId}`, {
-        method: "DELETE",
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Delete failed");
+      await axios.delete(`/api/files/delete?id=${deleteModal.fileId}`);
 
       toast.success("File permanently deleted.");
       setDeleteModal({ show: false, fileId: null });
       fetchFiles();
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || "Delete failed");
     } finally {
       setLoading(false);
     }
@@ -215,20 +199,16 @@ export default function HomePage() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/files/share", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileId: shareModal.fileId, recipientId }),
+      await axios.post("/api/files/share", { 
+        fileId: shareModal.fileId, 
+        recipientId 
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to share file");
 
       toast.success("File shared successfully!");
       setShareModal({ show: false, fileId: null });
       fetchFiles();
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || "Failed to share file");
     } finally {
       setLoading(false);
     }
@@ -237,13 +217,12 @@ export default function HomePage() {
   const handleLogout = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/logout", { method: "POST" });
-      if (!res.ok) throw new Error("Failed to log out");
+      await axios.post("/api/auth/logout");
       toast.success("Logged out successfully.");
       router.push("/login");
     } catch (err: any) {
       console.error(err);
-      toast.error(err.message || "There was an error logging out.");
+      toast.error(err.response?.data?.message || "There was an error logging out.");
     } finally {
       setLoading(false);
     }
@@ -258,22 +237,16 @@ export default function HomePage() {
     setProfileMsg(null);
 
     try {
-      const res = await fetch("/api/auth/update", {
-        method: "PATCH",
-        // Using native multipart/form-data implicitly configured by the browser
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Update failed");
+      const res = await axios.patch("/api/auth/update", formData);
 
       toast.success("Profile updated successfully!");
       setProfileMsg({ type: "success", text: "Profile updated successfully." });
-      setUser(data.user);
+      setUser(res.data.user);
       form.reset();
     } catch (err: any) {
-      setProfileMsg({ type: "error", text: err.message });
-      toast.error(err.message);
+      const msg = err.response?.data?.message || "Update failed";
+      setProfileMsg({ type: "error", text: msg });
+      toast.error(msg);
     } finally {
       setProfileLoading(false);
     }

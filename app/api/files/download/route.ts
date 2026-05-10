@@ -8,12 +8,17 @@ import { cookies } from "next/headers";
 
 export async function GET(req: Request) {
   try {
-    // 1. Validating JWT Session securely computationally bridging the environment natively
     const cookieStore = await cookies();
     const token = cookieStore.get("auth-token")?.value;
 
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized. Please authenticate your browser cookie natively." }, { status: 401 });
+      return NextResponse.json(
+        {
+          message:
+            "Unauthorized. Please authenticate your browser cookie natively.",
+        },
+        { status: 401 },
+      );
     }
 
     const secret = process.env.AUTH_SECRET!;
@@ -21,7 +26,10 @@ export async function GET(req: Request) {
     try {
       decoded = jwt.verify(token, secret);
     } catch {
-      return NextResponse.json({ message: "Corrupt authentication pipeline keys natively." }, { status: 401 });
+      return NextResponse.json(
+        { message: "Corrupt authentication pipeline keys natively." },
+        { status: 401 },
+      );
     }
 
     const userId = parseInt(decoded.id);
@@ -31,7 +39,13 @@ export async function GET(req: Request) {
     const fileId = searchParams.get("id");
 
     if (!fileId) {
-      return NextResponse.json({ message: "File ID severely missing from requested payload constraints." }, { status: 400 });
+      return NextResponse.json(
+        {
+          message:
+            "File ID severely missing from requested payload constraints.",
+        },
+        { status: 400 },
+      );
     }
 
     // 3. Prisma Database Context Mapping Authentication inherently protecting foreign assets computationally
@@ -40,12 +54,23 @@ export async function GET(req: Request) {
     });
 
     if (!fileRecord) {
-      return NextResponse.json({ message: "Encrypted memory blob disconnected or missing completely." }, { status: 404 });
+      return NextResponse.json(
+        {
+          message: "Encrypted memory blob disconnected or missing completely.",
+        },
+        { status: 404 },
+      );
     }
 
     // Military-grade constraint checking assuring only the strictly mapped authorized user OR implicitly selected recipient unlocks the structural AES payload logically!
     if (fileRecord.userId !== userId && fileRecord.recipientId !== userId) {
-      return NextResponse.json({ message: "Forbidden Access: You do not have encrypted ownership permissions associated properly natively." }, { status: 403 });
+      return NextResponse.json(
+        {
+          message:
+            "Forbidden Access: You do not have encrypted ownership permissions associated properly natively.",
+        },
+        { status: 403 },
+      );
     }
 
     // 4. Retrieve the encrypted payload
@@ -77,7 +102,10 @@ export async function GET(req: Request) {
     const inline = searchParams.get("inline") === "true";
     const headers = new Headers();
     headers.set("Content-Type", fileRecord.mimeType);
-    headers.set("Content-Disposition", inline ? "inline" : `attachment; filename="${fileRecord.originalName}"`);
+    headers.set(
+      "Content-Disposition",
+      inline ? "inline" : `attachment; filename="${fileRecord.originalName}"`,
+    );
     headers.set("Content-Length", decryptedBuffer.length.toString());
 
     return new NextResponse(new Uint8Array(decryptedBuffer), {
@@ -86,6 +114,9 @@ export async function GET(req: Request) {
     });
   } catch (error: any) {
     console.error("Critical Download Security Constraint Error:", error);
-    return NextResponse.json({ message: "Internal server structural decryption faults." }, { status: 500 });
+    return NextResponse.json(
+      { message: "Internal server structural decryption faults." },
+      { status: 500 },
+    );
   }
 }

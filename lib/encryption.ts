@@ -1,12 +1,12 @@
 import crypto from "crypto";
 
-// Advanced Encryption Standard natively satisfying the core assignment rubric computationally
 const ALGORITHM = "aes-256-gcm";
 const KEY_HEX = process.env.FILE_ENCRYPTION_KEY;
 
-// Fail-fast guard asserting correctly shaped 32-byte hexadecimal representation natively for structural security
 if (!KEY_HEX || KEY_HEX.length !== 64) {
-  throw new Error("CRITICAL: FILE_ENCRYPTION_KEY must be a 64-character hex string.");
+  throw new Error(
+    "CRITICAL: FILE_ENCRYPTION_KEY must be a 64-character hex string.",
+  );
 }
 
 const KEY = Buffer.from(KEY_HEX, "hex");
@@ -14,9 +14,14 @@ const KEY = Buffer.from(KEY_HEX, "hex");
 /**
  * Encrypts an incoming binary file stream symmetrically utilizing an isolated AES-256 Key
  */
-export function encryptBuffer(buffer: Buffer): { encryptedBuffer: Buffer; iv: string } {
+export function encryptBuffer(buffer: Buffer): {
+  encryptedBuffer: Buffer;
+  iv: string;
+} {
   // A completely randomized Initialization Vector protecting identical files exclusively
+  // Generates 16 cryptographically strong random bytes to serve as the Initialization Vector (IV).
   const iv = crypto.randomBytes(16);
+
   const cipher = crypto.createCipheriv(ALGORITHM, KEY, iv);
 
   // Authenticated encryption securely appending the AuthTag uniquely
@@ -30,22 +35,27 @@ export function encryptBuffer(buffer: Buffer): { encryptedBuffer: Buffer; iv: st
   };
 }
 
-/**
- * Decrypts a previously secured disk blob safely reconstructing original inputs symmetrically
- */
 export function decryptBuffer(encryptedBuffer: Buffer, ivHex: string): Buffer {
   const iv = Buffer.from(ivHex, "hex");
-  
+
   // GCM appends the 16-byte authentication tag exclusively at the EOF
   const authTagLength = 16;
-  const authTag = encryptedBuffer.subarray(encryptedBuffer.length - authTagLength);
-  const encryptedData = encryptedBuffer.subarray(0, encryptedBuffer.length - authTagLength);
-
+  const authTag = encryptedBuffer.subarray(
+    encryptedBuffer.length - authTagLength,
+  );
+  const encryptedData = encryptedBuffer.subarray(
+    0,
+    encryptedBuffer.length - authTagLength,
+  );
+  // Creates a Decipher instance using the same algorithm, key, and IV that were used for encryption.
   const decipher = crypto.createDecipheriv(ALGORITHM, KEY, iv);
+  // Validates the authentication tag (AuthTag) appended to the encrypted data.
   decipher.setAuthTag(authTag);
 
+  // Decrypts the data in chunks.
   const decryptedChunk1 = decipher.update(encryptedData);
   const decryptedChunk2 = decipher.final();
 
+  // Returns the decrypted data as a single Buffer.
   return Buffer.concat([decryptedChunk1, decryptedChunk2]);
 }

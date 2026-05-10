@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     if (!email || !password) {
       return NextResponse.json(
         { message: "Missing email or password" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json(
         { message: "Invalid email or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     if (user.isBlocked) {
       return NextResponse.json(
         { message: "Your account has been suspended by an administrator." },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     if (!passwordMatch) {
       return NextResponse.json(
         { message: "Invalid email or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -54,13 +54,15 @@ export async function POST(req: Request) {
         role: user.role,
       },
       secret,
-      { expiresIn: "7d" } // expires in 7 days
+      { expiresIn: "7d" },
     );
 
-    // Create a strict HTTP-Only cookie for maximum security against XSS
     const response = NextResponse.json(
-      { message: "Logged in successfully", user: { id: user.id, email: user.email, name: user.name } },
-      { status: 200 }
+      {
+        message: "Logged in successfully",
+        user: { id: user.id, email: user.email, name: user.name },
+      },
+      { status: 200 },
     );
 
     response.cookies.set({
@@ -70,7 +72,7 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
       path: "/",
-      sameSite: "lax", // 'lax' prevents CSRF broadly while still allowing main-domain navigation
+      sameSite: "lax",
     });
 
     return response;
@@ -78,7 +80,7 @@ export async function POST(req: Request) {
     console.error("Login API Error:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

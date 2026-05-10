@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
@@ -55,22 +56,11 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to sign up");
-      }
-
+      await axios.post("/api/auth/signup", formData);
       toast.success("Account created successfully! Please log in.");
       router.push("/login?registered=true");
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || "Failed to sign up");
     } finally {
       setLoading(false);
     }

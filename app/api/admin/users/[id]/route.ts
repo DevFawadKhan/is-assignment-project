@@ -1,20 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { getAdminSession } from "../../utils";
 import bcrypt from "bcryptjs";
-
-function getAdminSession(cookieStore: any) {
-  const token = cookieStore.get("auth-token")?.value;
-  if (!token) return null;
-  try {
-    const decoded: any = jwt.verify(token, process.env.AUTH_SECRET!);
-    if (decoded.role !== "ADMIN") return null;
-    return decoded;
-  } catch (e) {
-    return null;
-  }
-}
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {

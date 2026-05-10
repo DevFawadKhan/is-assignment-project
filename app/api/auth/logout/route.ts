@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     // Return a 200 response
     const response = NextResponse.json(
       { message: "Logged out successfully" },
-      { status: 200 }
+      { status: 200 },
     );
 
     // Expire the token immediately to delete the browser cookie
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       value: "",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      expires: new Date(0), // Sets expiration to Jan 1st 1970
+      expires: new Date(0),
       path: "/",
       sameSite: "lax",
     });
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     console.error("Logout API Error:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

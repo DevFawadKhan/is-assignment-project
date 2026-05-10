@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { 
   ShieldCheck, 
   Lock, 
@@ -26,24 +27,25 @@ export default function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("/api/admin/users");
-      if (!res.ok) throw new Error("Failed to load users");
-      const data = await res.json();
-      setUsers(data.users);
-    } catch(err: any) { setError(err.message); }
+      const res = await axios.get("/api/admin/users");
+      setUsers(res.data.users);
+    } catch(err: any) { 
+      setError(err.response?.data?.message || err.message); 
+    }
   };
 
   const fetchFiles = async () => {
     try {
-      const res = await fetch("/api/admin/files");
-      if (!res.ok) throw new Error("Failed to load files");
-      const data = await res.json();
-      setFiles(data.files);
-    } catch(err: any) { setError(err.message); }
+      const res = await axios.get("/api/admin/files");
+      setFiles(res.data.files);
+    } catch(err: any) { 
+      setError(err.response?.data?.message || err.message); 
+    }
   };
 
   useEffect(() => {
-    fetch("/api/auth/me").then(res => res.json()).then(data => {
+    axios.get("/api/auth/me").then(res => {
+      const data = res.data;
       if (!data.user || data.user.role !== "ADMIN") {
         router.push("/");
       } else {
@@ -51,47 +53,41 @@ export default function AdminDashboard() {
         fetchFiles();
         setLoading(false);
       }
+    }).catch(() => {
+      router.push("/");
     });
   }, [router]);
 
   const toggleBlock = async (id: number, currentStatus: boolean) => {
-    const res = await fetch(`/api/admin/users/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isBlocked: !currentStatus })
-    });
-    
-    if (res.ok) {
+    try {
+      await axios.patch(`/api/admin/users/${id}`, { isBlocked: !currentStatus });
       toast.success(`User ${currentStatus ? "unblocked" : "blocked"} successfully.`);
       fetchUsers();
-    } else {
-      const data = await res.json();
-      toast.error(data.message || "Failed to update user status.");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to update user status.");
     }
   };
 
   const deleteUser = async (id: number) => {
     if(!confirm("Are you sure? This deletes the user and all their encrypted files permanently.")) return;
-    const res = await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
-    if (res.ok) {
+    try {
+      await axios.delete(`/api/admin/users/${id}`);
       toast.success("User and associated files deleted.");
       fetchUsers();
       fetchFiles();
-    } else {
-      const data = await res.json();
-      toast.error(data.message || "Failed to delete user.");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to delete user.");
     }
   };
 
   const deleteFile = async (id: number) => {
     if(!confirm("Are you sure? This destroys the payload definitively.")) return;
-    const res = await fetch(`/api/admin/files/${id}`, { method: "DELETE" });
-    if (res.ok) {
+    try {
+      await axios.delete(`/api/admin/files/${id}`);
       toast.success("Encrypted payload purged definitively.");
       fetchFiles();
-    } else {
-      const data = await res.json();
-      toast.error(data.message || "Failed to purge file.");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to purge file.");
     }
   };
 
@@ -107,18 +103,12 @@ export default function AdminDashboard() {
 
     if (Object.keys(payload).length === 0) return;
 
-    const res = await fetch(`/api/admin/users/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    
-    if (res.ok) {
+    try {
+      await axios.patch(`/api/admin/users/${id}`, payload);
       toast.success("User details updated successfully.");
       fetchUsers();
-    } else {
-      const data = await res.json();
-      toast.error(data.message || "Failed to update user.");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to update user.");
     }
   };
 

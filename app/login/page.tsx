@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 
 function LoginForm() {
@@ -32,22 +33,11 @@ function LoginForm() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to log in");
-      }
-
+      await axios.post("/api/auth/login", formData);
       toast.success("Welcome back!");
       router.push("/");
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || "Failed to log in");
     } finally {
       setLoading(false);
     }
