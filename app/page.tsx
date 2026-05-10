@@ -6,32 +6,26 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import axios from "axios";
 import {
-  ShieldCheck,
-  Settings,
-  LogOut,
   Upload,
   Eye,
   Download,
   Trash2,
   Share2,
-  User,
   File,
   ArrowUpRight,
   ArrowDownLeft,
   Lock,
-  Menu,
-  X,
 } from "lucide-react";
-// --- SVG Icons Wrappers (Lucide Integration) ---
-const VaultIcon = () => <ShieldCheck size={20} />;
-const SettingsIcon = () => <Settings size={20} />;
-const LogoutIcon = () => <LogOut size={20} />;
+import DeleteModal from "@/components/DeleteModal";
+import ShareModal from "@/components/ShareModal";
+import Sidebar from "@/components/Sidebar";
+import Settings from "@/components/Settings";
+// --- Icon Helper Wrappers ---
 const UploadIcon = () => <Upload size={20} />;
 const EyeIcon = () => <Eye size={16} />;
 const DownloadIcon = () => <Download size={16} />;
 const TrashIcon = () => <Trash2 size={16} />;
 const ShareIcon = () => <Share2 size={16} />;
-const UserIcon = () => <User size={32} />;
 const FileIcon = () => <File size={24} />;
 
 interface UserInfo {
@@ -71,13 +65,6 @@ export default function HomePage() {
   >([]);
   const [activeTab, setActiveTab] = useState<"vault" | "settings">("vault");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Profile Update States
-  const [profileLoading, setProfileLoading] = useState(false);
-  const [profileMsg, setProfileMsg] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
 
   // Custom Modal States
   const [deleteModal, setDeleteModal] = useState<{
@@ -202,9 +189,9 @@ export default function HomePage() {
 
     setLoading(true);
     try {
-      await axios.post("/api/files/share", { 
-        fileId: shareModal.fileId, 
-        recipientId 
+      await axios.post("/api/files/share", {
+        fileId: shareModal.fileId,
+        recipientId,
       });
 
       toast.success("File shared successfully!");
@@ -225,139 +212,25 @@ export default function HomePage() {
       router.push("/login");
     } catch (err: any) {
       console.error(err);
-      toast.error(err.response?.data?.message || "There was an error logging out.");
+      toast.error(
+        err.response?.data?.message || "There was an error logging out.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    setProfileLoading(true);
-    setProfileMsg(null);
-
-    try {
-      const res = await axios.patch("/api/auth/update", formData);
-
-      toast.success("Profile updated successfully!");
-      setProfileMsg({ type: "success", text: "Profile updated successfully." });
-      setUser(res.data.user);
-      form.reset();
-    } catch (err: any) {
-      const msg = err.response?.data?.message || "Update failed";
-      setProfileMsg({ type: "error", text: msg });
-      toast.error(msg);
-    } finally {
-      setProfileLoading(false);
-    }
-  };
-
   return (
     <div className="flex h-dvh bg-bg-primary overflow-hidden w-full relative">
-      {/* Mobile Header / Hamburger Trigger */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 glass-panel border-b border-glass-border/30 z-[100] flex items-center px-4 justify-between">
-        <div className="flex items-center gap-2">
-           <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center text-white shadow-lg shadow-accent-primary/20">
-              <VaultIcon />
-           </div>
-           <span className="font-bold text-text-main">FileVault</span>
-        </div>
-        <button 
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-lg bg-black/5 text-text-main hover:bg-black/10 transition-all"
-        >
-          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Sidebar Backdrop Overlay (Mobile only) */}
-      {sidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[110] animate-fade-in"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar Navigation */}
-      <aside className={`
-        fixed lg:relative z-[120] lg:z-10
-        w-64 h-full
-        glass border-r border-glass-border/30 
-        flex flex-col justify-between 
-        shrink-0 shadow-2xl rounded-none
-        transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
-        <div>
-          <div className="p-6 flex items-center gap-3 border-b border-glass-border/20">
-            <div className="w-10 h-10 shrink-0 rounded-xl bg-accent-primary flex items-center justify-center text-text-main shadow-lg shadow-accent-primary/20 overflow-hidden">
-              {user?.profileImage && !user.profileImage.toLowerCase().includes("javascript:") && !user.profileImage.toLowerCase().includes("vbscript:") && !user.profileImage.toLowerCase().includes("data:text/html") ? (
-                <img
-                  src={user.profileImage}
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <UserIcon />
-              )}
-            </div>
-            <div className="overflow-hidden">
-              <h2 className="font-bold text-text-main text-lg truncate leading-tight">
-                {user ? user.name : "Loading..."}
-              </h2>
-              <p className="text-xs text-text-muted truncate">
-                {user ? user.email : "..."}
-              </p>
-            </div>
-          </div>
-
-          <nav className="p-4 space-y-2 mt-4">
-            <button
-              onClick={() => { setActiveTab("vault"); setSidebarOpen(false); }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-semibold ${activeTab === "vault" ? "bg-blue-50 text-blue-900 border border-blue-100 shadow-sm" : "text-text-muted hover:bg-black/5 hover:text-text-main border border-transparent"}`}
-            >
-              <VaultIcon />
-              My Vault
-            </button>
-            <button
-              onClick={() => { setActiveTab("settings"); setSidebarOpen(false); }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-semibold ${activeTab === "settings" ? "bg-blue-50 text-blue-900 border border-blue-100 shadow-sm" : "text-text-muted hover:bg-black/5 hover:text-text-main border border-transparent"}`}
-            >
-              <SettingsIcon />
-              Profile Settings
-            </button>
-          </nav>
-        </div>
-
-        <div className="p-4 border-t border-glass-border/20 space-y-2">
-          {user?.role === "ADMIN" && (
-            <Link
-              href="/admin"
-              className="w-full flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-sm cursor-pointer mb-2"
-            >
-              <SettingsIcon />
-              Admin Controls
-            </Link>
-          )}
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 bg-error/10 hover:bg-error border border-error/20 hover:border-error text-error hover:text-text-main px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-sm hover:shadow-error/30 cursor-pointer"
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="spinner w-[14px] h-[14px] border-text-main"></span>
-            ) : (
-              <>
-                <LogoutIcon />
-                Log Out
-              </>
-            )}
-          </button>
-        </div>
-      </aside>
+      <Sidebar
+        user={user}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        handleLogout={handleLogout}
+        loading={loading}
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto p-6 md:p-12 relative flex items-start justify-center pt-24 lg:pt-12">
@@ -546,196 +419,28 @@ export default function HomePage() {
           )}
 
           {activeTab === "settings" && (
-            <div className="animate-slide-up w-full max-w-2xl">
-              <header className="mb-10">
-                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-text-main mb-2 drop-shadow-sm">
-                  Profile Settings
-                </h1>
-                <p className="text-text-muted text-sm md:text-base">
-                  Update your personal information and rotate your password.
-                </p>
-              </header>
-
-              <div className="glass bg-white p-6 md:p-10 rounded-[24px] border border-glass-border shadow-soft">
-                <form onSubmit={handleProfileUpdate} className="space-y-6">
-                  <div className="flex flex-col items-center mb-6">
-                    <div className="w-20 h-20 rounded-2xl bg-black/5 border border-glass-border flex items-center justify-center text-text-muted overflow-hidden shadow-inner relative group">
-                      {user?.profileImage && !user.profileImage.toLowerCase().includes("javascript:") && !user.profileImage.toLowerCase().includes("vbscript:") && !user.profileImage.toLowerCase().includes("data:text/html") ? (
-                        <img
-                          src={user.profileImage}
-                          alt="Profile"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <UserIcon />
-                      )}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
-                        <span className="text-white text-xs font-bold">
-                          Edit Profile
-                        </span>
-                      </div>
-                    </div>
-                    <input
-                      type="file"
-                      name="profileImage"
-                      accept="image/*"
-                      className="text-sm text-text-muted file:bg-bg-secondary file:text-text-main file:border-none file:mr-4 file:py-2 file:px-4 file:rounded-xl hover:file:bg-black/5 cursor-pointer"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-text-muted mb-2 uppercase tracking-wide">
-                      Display Name
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      defaultValue={user?.name}
-                      placeholder="Enter your full name"
-                      className="w-full p-4 bg-bg-secondary border border-glass-border rounded-xl text-text-main focus:border-accent-primary outline-none transition-all focus:ring-2 focus:ring-accent-primary/20"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-text-muted mb-2 uppercase tracking-wide">
-                      New Password
-                    </label>
-                    <input
-                      type="password"
-                      name="password"
-                      placeholder="Leave blank to keep current password"
-                      className="w-full p-4 bg-bg-secondary border border-glass-border rounded-xl text-text-main focus:border-accent-primary outline-none transition-all focus:ring-2 focus:ring-accent-primary/20"
-                    />
-                  </div>
-
-                  {profileMsg && (
-                    <div
-                      className={`p-4 rounded-xl text-sm font-bold animate-fade-in border ${profileMsg.type === "success" ? "bg-green-100 text-green-700 border-green-200" : "bg-error/10 text-error border-error/20"}`}
-                    >
-                      {profileMsg.text}
-                    </div>
-                  )}
-
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      className="w-full sm:w-auto bg-accent-primary hover:bg-accent-hover text-white font-bold py-4 px-10 rounded-xl transition-all duration-300 shadow-md hover:shadow-accent-primary/40 disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
-                      disabled={profileLoading}
-                    >
-                      {profileLoading ? (
-                        <span className="spinner w-[18px] h-[18px] border-text-main"></span>
-                      ) : (
-                        "Save Changes"
-                      )}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
+            <Settings
+              user={user}
+              onUpdate={(updatedUser) => setUser(updatedUser)}
+            />
           )}
         </div>
       </main>
 
-      {/* Delete Confirmation Modal */}
-      {deleteModal.show && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[1000] animate-fade-in p-4">
-          <div className="glass bg-white p-10 md:p-12 rounded-[32px] w-full max-w-[450px] text-center animate-slide-up border border-error/20 shadow-xl">
-            <div className="w-20 h-20 bg-error/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-error/20 text-error">
-              <TrashIcon />
-            </div>
-            <h2 className="text-2xl font-bold text-text-main mb-3">
-              Permanently Delete?
-            </h2>
-            <p className="text-text-muted text-sm leading-relaxed mb-8">
-              This action cannot be reversed. The encrypted blob will be
-              destroyed and unrecoverable from the vault.
-            </p>
-            <div className="flex gap-4">
-              <button
-                className="flex-1 cursor-pointer bg-black/5 border border-glass-border text-text-main font-bold py-4 px-4 rounded-xl hover:bg-black/10 transition-all focus:ring-2 focus:ring-black/10"
-                onClick={() => setDeleteModal({ show: false, fileId: null })}
-                disabled={loading}
-              >
-                Cancel
-              </button>
-              <button
-                className="flex-1 cursor-pointer bg-error text-white font-bold py-4 px-4 rounded-xl hover:bg-red-600 transition-all shadow-md shadow-error/40 focus:ring-2 focus:ring-error/50"
-                onClick={handleDelete}
-                disabled={loading}
-              >
-                {loading ? (
-                  <span className="spinner w-[18px] h-[18px] border-white"></span>
-                ) : (
-                  "Delete File"
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteModal
+        show={deleteModal.show}
+        onClose={() => setDeleteModal({ show: false, fileId: null })}
+        onConfirm={handleDelete}
+        loading={loading}
+      />
 
-      {/* Share Modal Execution Dialog */}
-      {shareModal.show && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[1000] animate-fade-in p-4">
-          <div className="glass bg-white p-8 md:p-10 rounded-[32px] w-full max-w-[450px] text-center animate-slide-up shadow-xl border border-glass-border">
-            <div className="w-16 h-16 bg-black/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-glass-border text-text-main">
-              <ShareIcon />
-            </div>
-            <h2 className="text-xl font-bold text-text-main mb-2">
-              Share Secure Payload
-            </h2>
-            <p className="text-text-muted text-sm leading-relaxed mb-6">
-              Select a verified platform recipient to map this private encrypted
-              blob to. They will instantly be authorized to download it.
-            </p>
-
-            <form onSubmit={handleShare} className="text-left w-full">
-              <label className="block text-xs font-bold text-text-muted mb-2 uppercase tracking-wide">
-                Target Recipient
-              </label>
-              <select
-                name="recipientId"
-                className="w-full p-4 bg-bg-secondary border border-glass-border rounded-xl text-text-main focus:border-accent-primary outline-none transition-all focus:ring-2 focus:ring-accent-primary/20 cursor-pointer appearance-none mb-6"
-                required
-                disabled={loading}
-              >
-                <option value="" disabled selected className="text-text-muted">
-                  -- Select a registered team member --
-                </option>
-                {users.map((u) => (
-                  <option
-                    key={u.id}
-                    value={u.id}
-                    className="bg-bg-primary text-text-main"
-                  >
-                    {u.name} ({u.email})
-                  </option>
-                ))}
-              </select>
-
-              <div className="flex gap-4">
-                <button
-                  type="button"
-                  className="flex-1 cursor-pointer bg-black/5 border border-glass-border text-text-main font-bold py-3 px-4 rounded-xl hover:bg-black/10 transition-all focus:ring-2 focus:ring-black/10"
-                  onClick={() => setShareModal({ show: false, fileId: null })}
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 cursor-pointer bg-accent-primary text-white font-bold py-3 px-4 rounded-xl hover:bg-accent-hover transition-all shadow-md shadow-accent-primary/40 focus:ring-2 focus:ring-accent-primary/50"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <span className="spinner w-[18px] h-[18px] border-white"></span>
-                  ) : (
-                    "Share Safely"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <ShareModal
+        show={shareModal.show}
+        onClose={() => setShareModal({ show: false, fileId: null })}
+        onShare={handleShare}
+        users={users}
+        loading={loading}
+      />
     </div>
   );
 }
