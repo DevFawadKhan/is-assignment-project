@@ -3,6 +3,18 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { 
+  ShieldCheck, 
+  Lock, 
+  ArrowUp, 
+  ArrowDown, 
+  Trash2, 
+  Edit, 
+  ArrowLeft,
+  Users,
+  Database
+} from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -43,25 +55,44 @@ export default function AdminDashboard() {
   }, [router]);
 
   const toggleBlock = async (id: number, currentStatus: boolean) => {
-    await fetch(`/api/admin/users/${id}`, {
+    const res = await fetch(`/api/admin/users/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isBlocked: !currentStatus })
     });
-    fetchUsers();
+    
+    if (res.ok) {
+      toast.success(`User ${currentStatus ? "unblocked" : "blocked"} successfully.`);
+      fetchUsers();
+    } else {
+      const data = await res.json();
+      toast.error(data.message || "Failed to update user status.");
+    }
   };
 
   const deleteUser = async (id: number) => {
     if(!confirm("Are you sure? This deletes the user and all their encrypted files permanently.")) return;
-    await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
-    fetchUsers();
-    fetchFiles();
+    const res = await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      toast.success("User and associated files deleted.");
+      fetchUsers();
+      fetchFiles();
+    } else {
+      const data = await res.json();
+      toast.error(data.message || "Failed to delete user.");
+    }
   };
 
   const deleteFile = async (id: number) => {
     if(!confirm("Are you sure? This destroys the payload definitively.")) return;
-    await fetch(`/api/admin/files/${id}`, { method: "DELETE" });
-    fetchFiles();
+    const res = await fetch(`/api/admin/files/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      toast.success("Encrypted payload purged definitively.");
+      fetchFiles();
+    } else {
+      const data = await res.json();
+      toast.error(data.message || "Failed to purge file.");
+    }
   };
 
   const updateUserDetails = async (id: number) => {
@@ -76,12 +107,19 @@ export default function AdminDashboard() {
 
     if (Object.keys(payload).length === 0) return;
 
-    await fetch(`/api/admin/users/${id}`, {
+    const res = await fetch(`/api/admin/users/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    fetchUsers();
+    
+    if (res.ok) {
+      toast.success("User details updated successfully.");
+      fetchUsers();
+    } else {
+      const data = await res.json();
+      toast.error(data.message || "Failed to update user.");
+    }
   };
 
   if (loading) return <div className="min-h-screen bg-bg-primary flex items-center justify-center text-text-main font-bold">Verifying Admin Access...</div>;
@@ -93,8 +131,8 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-extrabold tracking-tight text-text-main">Admin Command Center</h1>
           <p className="text-text-muted mt-2">Manage infrastructure, modify user capabilities, and govern payloads.</p>
         </div>
-        <Link href="/" className="px-6 py-3 bg-black/5 hover:bg-black/10 border border-glass-border text-text-main rounded-xl font-bold transition-all shadow-sm">
-          Return to Vault
+        <Link href="/" className="flex items-center gap-2 px-6 py-3 bg-black/5 hover:bg-black/10 border border-glass-border text-text-main rounded-xl font-bold transition-all shadow-sm">
+          <ArrowLeft size={18} /> Return to Vault
         </Link>
       </header>
 
@@ -103,15 +141,15 @@ export default function AdminDashboard() {
       <div className="flex gap-4 mb-8">
         <button 
           onClick={() => setActiveTab("users")} 
-          className={`px-6 py-3 font-bold rounded-xl transition-all ${activeTab === "users" ? "bg-accent-primary text-white shadow-md shadow-accent-primary/20" : "bg-black/5 text-text-muted hover:text-text-main hover:bg-black/10"}`}
+          className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all ${activeTab === "users" ? "bg-accent-primary text-white shadow-md shadow-accent-primary/20" : "bg-black/5 text-text-muted hover:text-text-main hover:bg-black/10"}`}
         >
-          User Topologies ({users.length})
+          <Users size={18} /> User Topologies ({users.length})
         </button>
         <button 
           onClick={() => setActiveTab("files")} 
-          className={`px-6 py-3 font-bold rounded-xl transition-all ${activeTab === "files" ? "bg-accent-primary text-white shadow-md shadow-accent-primary/20" : "bg-black/5 text-text-muted hover:text-text-main hover:bg-black/10"}`}
+          className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all ${activeTab === "files" ? "bg-accent-primary text-white shadow-md shadow-accent-primary/20" : "bg-black/5 text-text-muted hover:text-text-main hover:bg-black/10"}`}
         >
-          Encrypted Payload Index ({files.length})
+          <Database size={18} /> Encrypted Payload Index ({files.length})
         </button>
       </div>
 
@@ -133,11 +171,11 @@ export default function AdminDashboard() {
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg overflow-hidden bg-black/5 border border-glass-border/50 flex shrink-0 items-center justify-center">
-                          {u.profileImage ? <img src={u.profileImage} className="w-full h-full object-cover"/> : <span className="text-text-muted text-sm font-bold">{u.name.charAt(0)}</span>}
+                          {u.profileImage && !u.profileImage.toLowerCase().trim().startsWith("javascript:") ? <img src={u.profileImage} className="w-full h-full object-cover"/> : <span className="text-text-muted text-sm font-bold">{u.name.charAt(0)}</span>}
                         </div>
                         <div>
                           <div className="font-bold text-text-main flex items-center gap-2">
-                             {u.name} {u.role === "ADMIN" && <span className="bg-accent-primary text-white text-[10px] px-1.5 py-0.5 rounded">ADMIN</span>}
+                             {u.name} {u.role === "ADMIN" && <span className="flex items-center gap-1 bg-accent-primary text-white text-[10px] px-1.5 py-0.5 rounded"><ShieldCheck size={10} /> ADMIN</span>}
                           </div>
                           <div className="text-xs text-text-muted">{u.email}</div>
                         </div>
@@ -145,8 +183,8 @@ export default function AdminDashboard() {
                     </td>
                     <td className="p-4 text-sm font-semibold text-text-main">
                       <div className="flex gap-2">
-                         <span className="bg-black/5 px-2 py-1 rounded border border-glass-border">Sent: {u._count.sentFiles}</span>
-                         <span className="bg-black/5 px-2 py-1 rounded border border-glass-border">Recv: {u._count.receivedFiles}</span>
+                         <span className="flex items-center gap-1 bg-black/5 px-2 py-1 rounded border border-glass-border"><ArrowUp size={12} className="text-accent-primary" /> Sent: {u._count.sentFiles}</span>
+                         <span className="flex items-center gap-1 bg-black/5 px-2 py-1 rounded border border-glass-border"><ArrowDown size={12} className="text-emerald-600" /> Recv: {u._count.receivedFiles}</span>
                       </div>
                     </td>
                     <td className="p-4">
@@ -159,14 +197,14 @@ export default function AdminDashboard() {
                     <td className="p-4 flex gap-2 justify-end">
                       {u.role !== "ADMIN" && (
                          <>
-                           <button onClick={() => toggleBlock(u.id, u.isBlocked)} className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${u.isBlocked ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'}`}>
+                           <button onClick={() => toggleBlock(u.id, u.isBlocked)} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${u.isBlocked ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'}`}>
                              {u.isBlocked ? "Unblock" : "Block"}
                            </button>
-                           <button onClick={() => updateUserDetails(u.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-black/5 text-text-main border border-glass-border hover:bg-black/10 transition-all">
-                             Modify
+                           <button onClick={() => updateUserDetails(u.id)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-black/5 text-text-main border border-glass-border hover:bg-black/10 transition-all">
+                             <Edit size={12} /> Modify
                            </button>
-                           <button onClick={() => deleteUser(u.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-error/10 text-error border border-error/20 hover:bg-error hover:text-white transition-all">
-                             Destroy
+                           <button onClick={() => deleteUser(u.id)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-error/10 text-error border border-error/20 hover:bg-error hover:text-white transition-all">
+                             <Trash2 size={12} /> Destroy
                            </button>
                          </>
                       )}
@@ -200,12 +238,12 @@ export default function AdminDashboard() {
                       {f.user?.name || "System"}
                     </td>
                     <td className="p-4 text-sm text-text-main">
-                      {f.recipient ? <span className="bg-black/5 px-2 py-1 rounded border border-glass-border font-semibold text-xs">{f.recipient.name}</span> : <span className="text-text-muted font-bold text-xs">🔒 Private Network</span>}
+                       {f.recipient ? <span className="bg-black/5 px-2 py-1 rounded border border-glass-border font-semibold text-xs">{f.recipient.name}</span> : <span className="flex items-center gap-1 text-text-muted font-bold text-xs"><Lock size={12} /> Private Network</span>}
                     </td>
                     <td className="p-4 text-right">
-                      <button onClick={() => deleteFile(f.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-error/10 text-error border border-error/20 hover:bg-error hover:text-white transition-all">
-                        Purge
-                      </button>
+                       <button onClick={() => deleteFile(f.id)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-error/10 text-error border border-error/20 hover:bg-error hover:text-white transition-all ml-auto">
+                        <Trash2 size={12} /> Purge
+                       </button>
                     </td>
                   </tr>
                 ))}

@@ -3,176 +3,33 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-// --- SVG Icons ---
-const VaultIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-    <circle cx="12" cy="12" r="3" />
-    <path d="M12 15v4" />
-  </svg>
-);
-const SettingsIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
-const LogoutIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-    <polyline points="16 17 21 12 16 7" />
-    <line x1="21" x2="9" y1="12" y2="12" />
-  </svg>
-);
-const UploadIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-    <polyline points="17 8 12 3 7 8" />
-    <line x1="12" x2="12" y1="3" y2="15" />
-  </svg>
-);
-const EyeIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
-const DownloadIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-    <polyline points="7 10 12 15 17 10" />
-    <line x1="12" x2="12" y1="15" y2="3" />
-  </svg>
-);
-const TrashIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M3 6h18" />
-    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-    <line x1="10" x2="10" y1="11" y2="17" />
-    <line x1="14" x2="14" y1="11" y2="17" />
-  </svg>
-);
-const ShareIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-    <polyline points="16 6 12 2 8 6" />
-    <line x1="12" x2="12" y1="2" y2="15" />
-  </svg>
-);
-const UserIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="32"
-    height="32"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-    <circle cx="12" cy="7" r="4" />
-  </svg>
-);
-const FileIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-    <polyline points="14 2 14 8 20 8" />
-  </svg>
-);
+import { toast } from "react-toastify";
+import {
+  ShieldCheck,
+  Settings,
+  LogOut,
+  Upload,
+  Eye,
+  Download,
+  Trash2,
+  Share2,
+  User,
+  File,
+  ArrowUpRight,
+  ArrowDownLeft,
+  Lock,
+} from "lucide-react";
+// --- SVG Icons Wrappers (Lucide Integration) ---
+const VaultIcon = () => <ShieldCheck size={20} />;
+const SettingsIcon = () => <Settings size={20} />;
+const LogoutIcon = () => <LogOut size={20} />;
+const UploadIcon = () => <Upload size={20} />;
+const EyeIcon = () => <Eye size={16} />;
+const DownloadIcon = () => <Download size={16} />;
+const TrashIcon = () => <Trash2 size={16} />;
+const ShareIcon = () => <Share2 size={16} />;
+const UserIcon = () => <User size={32} />;
+const FileIcon = () => <File size={24} />;
 
 interface UserInfo {
   name: string;
@@ -294,10 +151,12 @@ export default function HomePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Upload failed");
 
+      toast.success("File uploaded and encrypted successfully!");
       form.reset();
       fetchFiles();
     } catch (err: any) {
       setError(err.message);
+      toast.error(err.message);
     } finally {
       setUploading(false);
     }
@@ -331,10 +190,11 @@ export default function HomePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Delete failed");
 
+      toast.success("File permanently deleted.");
       setDeleteModal({ show: false, fileId: null });
       fetchFiles();
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -364,10 +224,11 @@ export default function HomePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to share file");
 
+      toast.success("File shared successfully!");
       setShareModal({ show: false, fileId: null });
       fetchFiles();
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -378,10 +239,11 @@ export default function HomePage() {
     try {
       const res = await fetch("/api/auth/logout", { method: "POST" });
       if (!res.ok) throw new Error("Failed to log out");
+      toast.success("Logged out successfully.");
       router.push("/login");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("There was an error logging out.");
+      toast.error(err.message || "There was an error logging out.");
     } finally {
       setLoading(false);
     }
@@ -405,25 +267,31 @@ export default function HomePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Update failed");
 
+      toast.success("Profile updated successfully!");
       setProfileMsg({ type: "success", text: "Profile updated successfully." });
       setUser(data.user);
       form.reset();
     } catch (err: any) {
       setProfileMsg({ type: "error", text: err.message });
+      toast.error(err.message);
     } finally {
       setProfileLoading(false);
     }
   };
 
   return (
-    <div className="flex h-[100dvh] bg-bg-primary overflow-hidden w-full">
+    <div className="flex h-dvh bg-bg-primary overflow-hidden w-full">
       {/* Sidebar Navigation */}
       <aside className="w-64 glass border-r border-glass-border/30 flex flex-col justify-between h-full relative z-10 shrink-0 shadow-2xl rounded-none">
         <div>
           <div className="p-6 flex items-center gap-3 border-b border-glass-border/20">
             <div className="w-10 h-10 shrink-0 rounded-xl bg-accent-primary flex items-center justify-center text-text-main shadow-lg shadow-accent-primary/20 overflow-hidden">
-              {user?.profileImage ? (
-                <img src={user.profileImage} alt="Avatar" className="w-full h-full object-cover" />
+              {user?.profileImage && !user.profileImage.toLowerCase().trim().startsWith("javascript:") ? (
+                <img
+                  src={user.profileImage}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <UserIcon />
               )}
@@ -596,17 +464,25 @@ export default function HomePage() {
                               {new Date(file.createdAt).toLocaleDateString()}
                             </div>
                             {file.recipientId && user && (
-                              <div className="mt-2 text-[10px] font-bold px-2 py-0.5 rounded border border-glass-border inline-block bg-black/5 text-text-main">
-                                {file.userId === parseInt((user as any).id)
-                                  ? `📤 Sent to: ${file.recipient?.name}`
-                                  : `📥 Received from: ${file.user?.name}`}
+                              <div className="mt-2 text-[10px] font-bold px-2 py-0.5 rounded border border-glass-border flex items-center gap-1 bg-black/5 text-text-main w-fit">
+                                {file.userId === parseInt((user as any).id) ? (
+                                  <>
+                                    <ArrowUpRight size={12} strokeWidth={3} />{" "}
+                                    Sent to: {file.recipient?.name}
+                                  </>
+                                ) : (
+                                  <>
+                                    <ArrowDownLeft size={12} strokeWidth={3} />{" "}
+                                    Received from: {file.user?.name}
+                                  </>
+                                )}
                               </div>
                             )}
                             {!file.recipientId &&
                               user &&
                               file.userId === parseInt((user as any).id) && (
-                                <div className="mt-2 text-[10px] font-bold px-2 py-0.5 rounded border border-glass-border inline-block bg-black/5 text-text-muted">
-                                  🔒 Private
+                                <div className="mt-2 text-[10px] font-bold px-2 py-0.5 rounded border border-glass-border flex items-center gap-1 bg-black/5 text-text-muted w-fit">
+                                  <Lock size={12} strokeWidth={3} /> Private
                                 </div>
                               )}
                           </div>
@@ -675,17 +551,28 @@ export default function HomePage() {
               <div className="glass bg-white p-6 md:p-10 rounded-[24px] border border-glass-border shadow-soft">
                 <form onSubmit={handleProfileUpdate} className="space-y-6">
                   <div className="flex flex-col items-center mb-6">
-                     <div className="w-24 h-24 rounded-2xl bg-black/5 flex items-center justify-center border border-glass-border mb-4 overflow-hidden relative group">
-                        {user?.profileImage ? (
-                           <img src={user.profileImage} alt="Avatar" className="w-full h-full object-cover" />
-                        ) : (
-                           <UserIcon />
-                        )}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
-                          <span className="text-white text-xs font-bold">Edit Profile</span>
-                        </div>
-                     </div>
-                     <input type="file" name="profileImage" accept="image/*" className="text-sm text-text-muted file:bg-bg-secondary file:text-text-main file:border-none file:mr-4 file:py-2 file:px-4 file:rounded-xl hover:file:bg-black/5 cursor-pointer" />
+                    <div className="w-20 h-20 rounded-2xl bg-black/5 border border-glass-border flex items-center justify-center text-text-muted overflow-hidden shadow-inner relative group">
+                      {user?.profileImage && !user.profileImage.toLowerCase().trim().startsWith("javascript:") ? (
+                        <img
+                          src={user.profileImage}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <UserIcon />
+                      )}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+                        <span className="text-white text-xs font-bold">
+                          Edit Profile
+                        </span>
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      name="profileImage"
+                      accept="image/*"
+                      className="text-sm text-text-muted file:bg-bg-secondary file:text-text-main file:border-none file:mr-4 file:py-2 file:px-4 file:rounded-xl hover:file:bg-black/5 cursor-pointer"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-text-muted mb-2 uppercase tracking-wide">

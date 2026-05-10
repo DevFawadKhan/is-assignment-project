@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     }
 
     // Create the JWT custom payload
-    const secret = process.env.AUTH_SECRET || "fallback_secret_for_development";
+    const secret = process.env.AUTH_SECRET!;
     const token = jwt.sign(
       {
         id: user.id.toString(),

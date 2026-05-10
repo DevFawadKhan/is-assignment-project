@@ -12,7 +12,7 @@ export async function GET() {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
     }
 
-    const secret = process.env.AUTH_SECRET || "fallback_secret_for_development";
+    const secret = process.env.AUTH_SECRET!;
     let decoded: any;
     try {
       decoded = jwt.verify(token, secret);

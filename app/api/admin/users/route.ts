@@ -7,7 +7,7 @@ function getAdminSession(cookieStore: any) {
   const token = cookieStore.get("auth-token")?.value;
   if (!token) return null;
   try {
-    const decoded: any = jwt.verify(token, process.env.AUTH_SECRET || "fallback_secret_for_development");
+    const decoded: any = jwt.verify(token, process.env.AUTH_SECRET!);
     if (decoded.role !== "ADMIN") return null;
     return decoded;
   } catch (e) {

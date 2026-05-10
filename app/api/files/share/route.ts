@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const secret = process.env.AUTH_SECRET || "fallback_secret_for_development";
+    const secret = process.env.AUTH_SECRET!;
     let decoded: any;
     try {
       decoded = jwt.verify(token, secret);

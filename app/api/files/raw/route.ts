@@ -14,7 +14,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const secret = process.env.AUTH_SECRET || "fallback_secret_for_development";
+    const secret = process.env.AUTH_SECRET!;
     let decoded: any;
     try {
       decoded = jwt.verify(token, secret);

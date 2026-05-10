@@ -17,7 +17,7 @@ export async function PATCH(req: Request) {
       );
     }
 
-    const secret = process.env.AUTH_SECRET || "fallback_secret_for_development";
+    const secret = process.env.AUTH_SECRET!;
     let decoded: any;
     try {
       decoded = jwt.verify(token, secret);
