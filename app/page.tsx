@@ -19,6 +19,8 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   Lock,
+  Menu,
+  X,
 } from "lucide-react";
 // --- SVG Icons Wrappers (Lucide Integration) ---
 const VaultIcon = () => <ShieldCheck size={20} />;
@@ -68,6 +70,7 @@ export default function HomePage() {
     { id: number; name: string; email: string }[]
   >([]);
   const [activeTab, setActiveTab] = useState<"vault" | "settings">("vault");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Profile Update States
   const [profileLoading, setProfileLoading] = useState(false);
@@ -253,9 +256,41 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex h-dvh bg-bg-primary overflow-hidden w-full">
+    <div className="flex h-dvh bg-bg-primary overflow-hidden w-full relative">
+      {/* Mobile Header / Hamburger Trigger */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 glass-panel border-b border-glass-border/30 z-[100] flex items-center px-4 justify-between">
+        <div className="flex items-center gap-2">
+           <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center text-white shadow-lg shadow-accent-primary/20">
+              <VaultIcon />
+           </div>
+           <span className="font-bold text-text-main">FileVault</span>
+        </div>
+        <button 
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 rounded-lg bg-black/5 text-text-main hover:bg-black/10 transition-all"
+        >
+          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Sidebar Backdrop Overlay (Mobile only) */}
+      {sidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[110] animate-fade-in"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar Navigation */}
-      <aside className="w-64 glass border-r border-glass-border/30 flex flex-col justify-between h-full relative z-10 shrink-0 shadow-2xl rounded-none">
+      <aside className={`
+        fixed lg:relative z-[120] lg:z-10
+        w-64 h-full
+        glass border-r border-glass-border/30 
+        flex flex-col justify-between 
+        shrink-0 shadow-2xl rounded-none
+        transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
         <div>
           <div className="p-6 flex items-center gap-3 border-b border-glass-border/20">
             <div className="w-10 h-10 shrink-0 rounded-xl bg-accent-primary flex items-center justify-center text-text-main shadow-lg shadow-accent-primary/20 overflow-hidden">
@@ -281,14 +316,14 @@ export default function HomePage() {
 
           <nav className="p-4 space-y-2 mt-4">
             <button
-              onClick={() => setActiveTab("vault")}
+              onClick={() => { setActiveTab("vault"); setSidebarOpen(false); }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-semibold ${activeTab === "vault" ? "bg-blue-50 text-blue-900 border border-blue-100 shadow-sm" : "text-text-muted hover:bg-black/5 hover:text-text-main border border-transparent"}`}
             >
               <VaultIcon />
               My Vault
             </button>
             <button
-              onClick={() => setActiveTab("settings")}
+              onClick={() => { setActiveTab("settings"); setSidebarOpen(false); }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-semibold ${activeTab === "settings" ? "bg-blue-50 text-blue-900 border border-blue-100 shadow-sm" : "text-text-muted hover:bg-black/5 hover:text-text-main border border-transparent"}`}
             >
               <SettingsIcon />
@@ -325,7 +360,7 @@ export default function HomePage() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-6 md:p-12 relative flex items-start justify-center">
+      <main className="flex-1 overflow-y-auto p-6 md:p-12 relative flex items-start justify-center pt-24 lg:pt-12">
         <div className="max-w-[1000px] w-full mx-auto animate-fade-in relative z-10 pt-4 pb-20">
           {activeTab === "vault" && (
             <div className="animate-slide-up space-y-8 w-full">

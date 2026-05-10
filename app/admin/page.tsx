@@ -115,31 +115,31 @@ export default function AdminDashboard() {
   if (loading) return <div className="min-h-screen bg-bg-primary flex items-center justify-center text-text-main font-bold">Verifying Admin Access...</div>;
 
   return (
-    <div className="flex flex-col min-h-screen bg-bg-primary p-8 w-full max-w-7xl mx-auto animate-fade-in">
-      <header className="flex justify-between items-center mb-10 pb-6 border-b border-glass-border">
+    <div className="flex flex-col min-h-screen bg-bg-primary p-4 md:p-8 w-full max-w-7xl mx-auto animate-fade-in">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 pb-6 border-b border-glass-border">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-text-main">Admin Command Center</h1>
-          <p className="text-text-muted mt-2">Manage infrastructure, modify user capabilities, and govern payloads.</p>
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-text-main">Admin Command Center</h1>
+          <p className="text-text-muted mt-1 text-sm md:text-base">Manage infrastructure, modify user capabilities, and govern payloads.</p>
         </div>
-        <Link href="/" className="flex items-center gap-2 px-6 py-3 bg-black/5 hover:bg-black/10 border border-glass-border text-text-main rounded-xl font-bold transition-all shadow-sm">
+        <Link href="/" className="flex items-center gap-2 px-4 py-2.5 md:px-6 md:py-3 bg-black/5 hover:bg-black/10 border border-glass-border text-text-main rounded-xl font-bold transition-all shadow-sm text-sm md:text-base whitespace-nowrap">
           <ArrowLeft size={18} /> Return to Vault
         </Link>
       </header>
 
       {error && <div className="p-4 bg-error/10 border border-error/20 text-error mb-8 rounded-xl font-bold text-sm">{error}</div>}
 
-      <div className="flex gap-4 mb-8">
+      <div className="flex flex-wrap gap-3 mb-8">
         <button 
           onClick={() => setActiveTab("users")} 
-          className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all ${activeTab === "users" ? "bg-accent-primary text-white shadow-md shadow-accent-primary/20" : "bg-black/5 text-text-muted hover:text-text-main hover:bg-black/10"}`}
+          className={`flex items-center gap-2 px-4 py-2.5 md:px-6 md:py-3 font-bold rounded-xl transition-all text-sm md:text-base ${activeTab === "users" ? "bg-accent-primary text-white shadow-md shadow-accent-primary/20" : "bg-black/5 text-text-muted hover:text-text-main hover:bg-black/10"}`}
         >
-          <Users size={18} /> User Topologies ({users.length})
+          <Users size={18} /> Users ({users.length})
         </button>
         <button 
           onClick={() => setActiveTab("files")} 
-          className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all ${activeTab === "files" ? "bg-accent-primary text-white shadow-md shadow-accent-primary/20" : "bg-black/5 text-text-muted hover:text-text-main hover:bg-black/10"}`}
+          className={`flex items-center gap-2 px-4 py-2.5 md:px-6 md:py-3 font-bold rounded-xl transition-all text-sm md:text-base ${activeTab === "files" ? "bg-accent-primary text-white shadow-md shadow-accent-primary/20" : "bg-black/5 text-text-muted hover:text-text-main hover:bg-black/10"}`}
         >
-          <Database size={18} /> Encrypted Payload Index ({files.length})
+          <Database size={18} /> Payloads ({files.length})
         </button>
       </div>
 
