@@ -171,7 +171,7 @@ export default function AdminDashboard() {
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg overflow-hidden bg-black/5 border border-glass-border/50 flex shrink-0 items-center justify-center">
-                          {u.profileImage && !u.profileImage.toLowerCase().trim().startsWith("javascript:") ? <img src={u.profileImage} className="w-full h-full object-cover"/> : <span className="text-text-muted text-sm font-bold">{u.name.charAt(0)}</span>}
+                          {u.profileImage && !u.profileImage.toLowerCase().includes("javascript:") && !u.profileImage.toLowerCase().includes("vbscript:") && !u.profileImage.toLowerCase().includes("data:text/html") ? <img src={u.profileImage} className="w-full h-full object-cover"/> : <span className="text-text-muted text-sm font-bold">{u.name.charAt(0)}</span>}
                         </div>
                         <div>
                           <div className="font-bold text-text-main flex items-center gap-2">

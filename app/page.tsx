@@ -286,7 +286,7 @@ export default function HomePage() {
         <div>
           <div className="p-6 flex items-center gap-3 border-b border-glass-border/20">
             <div className="w-10 h-10 shrink-0 rounded-xl bg-accent-primary flex items-center justify-center text-text-main shadow-lg shadow-accent-primary/20 overflow-hidden">
-              {user?.profileImage && !user.profileImage.toLowerCase().trim().startsWith("javascript:") ? (
+              {user?.profileImage && !user.profileImage.toLowerCase().includes("javascript:") && !user.profileImage.toLowerCase().includes("vbscript:") && !user.profileImage.toLowerCase().includes("data:text/html") ? (
                 <img
                   src={user.profileImage}
                   alt="Avatar"
@@ -340,7 +340,7 @@ export default function HomePage() {
             disabled={loading}
           >
             {loading ? (
-              <span className="spinner w-[14px] h-[14px] !border-current border-text-main"></span>
+              <span className="spinner w-[14px] h-[14px] border-text-main"></span>
             ) : (
               <>
                 <LogoutIcon />
@@ -552,7 +552,7 @@ export default function HomePage() {
                 <form onSubmit={handleProfileUpdate} className="space-y-6">
                   <div className="flex flex-col items-center mb-6">
                     <div className="w-20 h-20 rounded-2xl bg-black/5 border border-glass-border flex items-center justify-center text-text-muted overflow-hidden shadow-inner relative group">
-                      {user?.profileImage && !user.profileImage.toLowerCase().trim().startsWith("javascript:") ? (
+                      {user?.profileImage && !user.profileImage.toLowerCase().includes("javascript:") && !user.profileImage.toLowerCase().includes("vbscript:") && !user.profileImage.toLowerCase().includes("data:text/html") ? (
                         <img
                           src={user.profileImage}
                           alt="Profile"
